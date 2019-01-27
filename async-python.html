@@ -62,6 +62,7 @@
     <!--
     <h2>Categories</h2>
     <ul class="navbar">
+      <li><a href="https://smarlowucf.github.io/category/booknotes.html">Booknotes</a></li>
       <li class="active"><a href="https://smarlowucf.github.io/category/python.html">Python</a></li>
     </ul> 
     -->
@@ -94,25 +95,25 @@ periods. Concurrency does not necessarily mean parallelism.</p>
 <p>&nbsp;</p>
 <h2>Asynchronous</h2>
 <p>&nbsp;</p>
-<h2>Threads (Sometimes)</h2>
+<h3>Threads (Sometimes)</h3>
 <p>Threads are lighter than processes however in Python they cannot run in
 parallel. Due to the GIL (Global Interpreter Lock) threads should not be
 used for CPU bound tasks. Using threads with CPU heavy tasks leads to
 code that basically runs synchronously.</p>
 <p>Threads do work well with I/O bound code though, since most of the time
 is spent waiting on a response.</p>
-<h2>Processes</h2>
+<h3>Processes</h3>
 <p>Processes are heavier than threads but do not have the same issue with
 the GIL. Thus multi-processing works well for CPU and I/O bound code.</p>
 <p>There are a few options in Python that provide multi-processing. But we
 will focus on the asyncio event loop framework and async/await syntax.</p>
-<h2>Workers (Celery, RQ)</h2>
+<h3>Workers (Celery, RQ)</h3>
 <p>We won't go into this option but it would mainly be useful with
 distributed apps, web apps and/or service oriented projects. Celery and
 RQ are distributed task queues which can concurrently run jobs with a
 pool of workers. These can be either threads, processes or combination
 of the two.</p>
-<h1>How does the code compare?</h1>
+<h4>How does the code compare?</h4>
 <p>&nbsp;</p>
 <h2>Synchronous</h2>
 <p>&nbsp;</p>
@@ -264,7 +265,7 @@ Async took <span class="m">0</span>.90s
 concurrent code using coroutines. The execution of coroutines is managed
 via an event loop through the use of cooperative or non-preemptive
 multitasking.</p>
-<h2>Coroutines</h2>
+<h3>Coroutines</h3>
 <p>In Python a coroutine is a generator that can yield values and receive
 values from the outside. This allows the function to pause execution
 just lke a generator and yield control.</p>
@@ -275,27 +276,27 @@ natively using the keywords <code>async</code>/<code>await</code>.</p>
 <p><strong>Note</strong></p>
 <p>Native coroutines cannot contain any <code>yield</code> statements.</p>
 </blockquote>
-<h2>Generators</h2>
+<h3>Generators</h3>
 <p>Functions that can yield a value and pause execution. Control is
 returned to the calling scope. In the case of asyncio this is the event
 loop. A generator object is an iterable and has the <code>next</code> function.
 This is allows the calling function to iterate over it and get values
 one by one.</p>
-<h2>Tasks / Futures</h2>
+<h3>Tasks / Futures</h3>
 <p>A future is like a promise. It is a place holder to say that a value
 will exist in the future. In python you can await futures, tasks and
 coroutines. When the future is finished it returns the value of the
 underlying function or an exception.</p>
 <p>A Task is a subclass of future that wraps a coroutine. When the
 coroutine finishes, the result of the Task is realized.</p>
-<h2>Event Loop</h2>
+<h3>Event Loop</h3>
 <p>An event loop runs constantly until it's explicitly stopped. The asyncio
 loop continuously iterates over a task queue. With each future the event
 loop calls the <code>next</code> function which picks up where it left off. When
 another coroutine or future is called the active future is suspended and
 cooperatively/voluntarily yields control. This is called a context
 switch. The event loop then moves to the next task.</p>
-<h2>Async/await</h2>
+<h3>Async/await</h3>
 <p>Async/await can be considered an API to access event loops. This is idea
 is discussed by <a href="http://pyvideo.org/python-brasil-2015/keynote-david-beazley-topics-of-interest-python-asyncio.html">David
 Beazley</a>.
@@ -310,14 +311,14 @@ coroutine. The decorator based coroutine uses <code>yield from</code> instead of
 <p>&nbsp;</p>
 <h2>Other Libraries</h2>
 <p>&nbsp;</p>
-<h2>Curio</h2>
+<h3>Curio</h3>
 <p>A library that's similar to and can replace the asyncio event loop for
 concurrent programming. It uses the same async/await syntax and
 cooperative multitasking just like asyncio. However, the way it handles
 events is very different and the API is much smaller.
 <a href="https://curio.readthedocs.io/en/latest/">Curio</a> performs around 20%
 faster than comparable asyncio code.</p>
-<h2>Trio</h2>
+<h3>Trio</h3>
 <p><a href="https://trio.readthedocs.io/en/latest/index.html">Trio</a> is also an
 async/await native I/O library for Python. Its main purpose is to help
 you write programs that do multiple things at the same time with
@@ -330,7 +331,7 @@ Dave Beazley's Curio.</p>
 <p>&nbsp;</p>
 <h2>A Few More Examples</h2>
 <p>&nbsp;</p>
-<h2>CPU Bound Synchronous</h2>
+<h3>CPU Bound Synchronous</h3>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">timeit</span>
 
 
@@ -356,7 +357,7 @@ Sync took <span class="m">2</span>.91s
 </pre></div>
 
 
-<h2>CPU Bound Multi-thread</h2>
+<h3>CPU Bound Multi-thread</h3>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">timeit</span>
 
 <span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
@@ -399,7 +400,7 @@ Thread took <span class="m">2</span>.86s
     surprising since each thread is utilizing 100% CPU during execution.
     The GIL blocks the threads from running concurrently.</li>
 </ul>
-<h2>CPU Bound Multi-process w/ asyncio</h2>
+<h3>CPU Bound Multi-process w/ asyncio</h3>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">timeit</span>
 
@@ -439,7 +440,7 @@ Async took <span class="m">6</span>.34s
     task to the queue. This adds up quickly and requires an excessive
     number of context switches.</li>
 </ul>
-<h2>With Iterative Fibonacci Algorithm</h2>
+<h3>With Iterative Fibonacci Algorithm</h3>
 <div class="highlight"><pre><span></span><span class="o">...</span>
 <span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
@@ -466,7 +467,7 @@ Async took <span class="m">0</span>.50s
 <li>Now we don't have all of the context switches that come with a
     recursive algorithm.</li>
 </ul>
-<h2>Asyncio Iterative Fibonacci Example Using Process Pool</h2>
+<h3>Asyncio Iterative Fibonacci Example Using Process Pool</h3>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">concurrent.futures</span>
 <span class="kn">import</span> <span class="nn">timeit</span>
@@ -517,7 +518,7 @@ Async took <span class="m">0</span>.50s
 <p>We generate a list of tasks each running fib in the process pool.</p>
 </li>
 </ul>
-<h2>First Completed</h2>
+<h3>First Completed</h3>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">timeit</span>
 <span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">FIRST_COMPLETED</span>
