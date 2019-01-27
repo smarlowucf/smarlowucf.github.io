@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en" itemscope itemtype="http://schema.org/Person">
+<head>
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>A Pythonic Journey Into Concurrency</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Sean Marlow">
+
+  <link rel="shortcut icon" href="">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="smarlowucf">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="http://localhost:8000/theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="http://localhost:8000/theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+
+
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="http://localhost:8000/async-python.html">
+<meta name="twitter:title" content="smarlowucf ~ A Pythonic Journey Into Concurrency">
+<meta name="twitter:description" content="<p>A look at concurrency in Python</p>">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="smarlowucf ~ A Pythonic Journey Into Concurrency" />
+<meta property="og:description" content="<p>A look at concurrency in Python</p>" />
+<meta property="og:image" content="" />
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href="http://localhost:8000"><img id="avatar" src=""></a></center>-->
+    <h1>smarlowucf</h1>
+      <p>Coder, Photographer, Traveler</p>
+    <br>
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+          <li><a class="nav__link" href="http://localhost:8000">Blog</a></li>
+         
+          <li><a class="nav__link" href="http://localhost:8000/pages/about.html">About</a></li>
+         
+      </ul>
+    </nav>
+
+    <p class="social">
+        <a href="https://github.com/smarlowucf" target="_blank" ><img src="http://localhost:8000/theme/images/icons/github.png"></a>
+    </p>
+
+    <!--
+    <h2>Categories</h2>
+    <ul class="navbar">
+      <li class="active"><a href="http://localhost:8000/category/python.html">Python</a></li>
+    </ul> 
+    -->
+  </aside>
+
+  <!-- Content -->
+  <article>
+<section id="content">
+    <article>
+        <h2 class="post_title post_detail"><a href="http://localhost:8000/async-python.html" rel="bookmark" title="Permalink to A Pythonic Journey Into Concurrency">A Pythonic Journey Into Concurrency</a></h2>
+        <div class="entry-content blog-post">
+            <h2>Synchronous vs Asynchronous</h2>
+<dl>
+<dt>Synchronous</dt>
+<dd>
+<p>Sequential set of actions or tasks. One process at a time, when one
+finishes the next starts.</p>
+</dd>
+<dt>Asynchronous</dt>
+<dd>
+<p>Processes or tasks can take place concurrently during execution of a
+program.</p>
+</dd>
+<dt>Concurrency</dt>
+<dd>
+<p>When several computations are executed during overlapping time
+periods. Concurrency does not necessarily mean parallelism.</p>
+</dd>
+</dl>
+<p>&nbsp;</p>
+<h2>Asynchronous</h2>
+<p>&nbsp;</p>
+<h2>Threads (Sometimes)</h2>
+<p>Threads are lighter than processes however in Python they cannot run in
+parallel. Due to the GIL (Global Interpreter Lock) threads should not be
+used for CPU bound tasks. Using threads with CPU heavy tasks leads to
+code that basically runs synchronously.</p>
+<p>Threads do work well with I/O bound code though, since most of the time
+is spent waiting on a response.</p>
+<h2>Processes</h2>
+<p>Processes are heavier than threads but do not have the same issue with
+the GIL. Thus multi-processing works well for CPU and I/O bound code.</p>
+<p>There are a few options in Python that provide multi-processing. But we
+will focus on the asyncio event loop framework and async/await syntax.</p>
+<h2>Workers (Celery, RQ)</h2>
+<p>We won't go into this option but it would mainly be useful with
+distributed apps, web apps and/or service oriented projects. Celery and
+RQ are distributed task queues which can concurrently run jobs with a
+pool of workers. These can be either threads, processes or combination
+of the two.</p>
+<h1>How does the code compare?</h1>
+<p>&nbsp;</p>
+<h2>Synchronous</h2>
+<p>&nbsp;</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">timeit</span>
+
+
+<span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Start sleep&#39;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Stop sleep&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">9</span><span class="p">)</span>
+
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+
+<span class="n">main</span><span class="p">()</span>
+
+<span class="n">elapsed</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Sync took </span><span class="si">%0.2f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="n">elapsed</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>&gt; python sync_sleep.py
+Start sleep
+Stop sleep  
+Start sleep
+Stop sleep
+Sync took <span class="m">1</span>.70s
+</pre></div>
+
+
+<ul>
+<li>Each call to sleep function happens sequentially.</li>
+</ul>
+<p>&nbsp;</p>
+<h2>Multi-thread</h2>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">timeit</span>
+
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
+
+
+<span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Start sleep&#39;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Stop sleep&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">s1</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">sleep</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="o">.</span><span class="mi">8</span><span class="p">,))</span>
+    <span class="n">s2</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">sleep</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="o">.</span><span class="mi">9</span><span class="p">,))</span>
+
+    <span class="n">s1</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">s2</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="n">s1</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>  
+    <span class="n">s2</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+
+<span class="n">main</span><span class="p">()</span>
+
+<span class="n">elapsed</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Thread took </span><span class="si">%0.2f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="n">elapsed</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>&gt; python thread_sleep.py
+Start sleep
+Start sleep  
+Stop sleep
+Stop sleep
+Thread took <span class="m">0</span>.90s  
+</pre></div>
+
+
+<ul>
+<li>
+<p>Both threads have been started, join waits for execution to finish.</p>
+</li>
+<li>
+<p>Both threads start the sleep function concurrently.</p>
+</li>
+<li>
+<p>Execution time is equal to longest sleep function call.</p>
+</li>
+</ul>
+<p>&nbsp;</p>
+<h2>Multi-process w/ asyncio</h2>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">timeit</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>  
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Start sleep&#39;</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>  
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Stop sleep&#39;</span><span class="p">)</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">8</span><span class="p">),</span> <span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">9</span><span class="p">)]</span>
+    <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span>  
+
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>  
+<span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">elapsed</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Async took </span><span class="si">%0.2f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="n">elapsed</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>&gt; python async_sleep.py
+Start sleep
+Start sleep
+Stop sleep
+Stop sleep
+Async took <span class="m">0</span>.90s
+</pre></div>
+
+
+<ul>
+<li>
+<p>The <code>async def</code> denotes this function as a coroutine. This also can
+    be denoted with the <code>@asyncio.coroutine</code> decorator.</p>
+</li>
+<li>
+<p>When we hit an await statement the future or coroutine is added to
+    event loop and we yield control back to the loop.</p>
+</li>
+<li>
+<p>The wait function wraps the coroutines with ensure_future which
+    returns a future instance for each.</p>
+</li>
+<li>
+<p>Ensures the loop is running until all the tasks finished.</p>
+</li>
+</ul>
+<p>&nbsp;</p>
+<h2>Asyncio</h2>
+<p>Asyncio provides an infrastructure for writing single-threaded
+concurrent code using coroutines. The execution of coroutines is managed
+via an event loop through the use of cooperative or non-preemptive
+multitasking.</p>
+<h2>Coroutines</h2>
+<p>In Python a coroutine is a generator that can yield values and receive
+values from the outside. This allows the function to pause execution
+just lke a generator and yield control.</p>
+<p>As noted above coroutines are denoted in one of two ways as of Python
+3.5. Generator based using a decorator and <code>yield from</code> as well as
+natively using the keywords <code>async</code>/<code>await</code>.</p>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>Native coroutines cannot contain any <code>yield</code> statements.</p>
+</blockquote>
+<h2>Generators</h2>
+<p>Functions that can yield a value and pause execution. Control is
+returned to the calling scope. In the case of asyncio this is the event
+loop. A generator object is an iterable and has the <code>next</code> function.
+This is allows the calling function to iterate over it and get values
+one by one.</p>
+<h2>Tasks / Futures</h2>
+<p>A future is like a promise. It is a place holder to say that a value
+will exist in the future. In python you can await futures, tasks and
+coroutines. When the future is finished it returns the value of the
+underlying function or an exception.</p>
+<p>A Task is a subclass of future that wraps a coroutine. When the
+coroutine finishes, the result of the Task is realized.</p>
+<h2>Event Loop</h2>
+<p>An event loop runs constantly until it's explicitly stopped. The asyncio
+loop continuously iterates over a task queue. With each future the event
+loop calls the <code>next</code> function which picks up where it left off. When
+another coroutine or future is called the active future is suspended and
+cooperatively/voluntarily yields control. This is called a context
+switch. The event loop then moves to the next task.</p>
+<h2>Async/await</h2>
+<p>Async/await can be considered an API to access event loops. This is idea
+is discussed by <a href="http://pyvideo.org/python-brasil-2015/keynote-david-beazley-topics-of-interest-python-asyncio.html">David
+Beazley</a>.
+The syntax is not tied directly to asyncio and can be used with other
+event loop implementations such as Curio and Trio.</p>
+<p>As of Python 3.5 the async/await syntax was added. This is similar to
+the previous decorator based syntax but there are key differences.</p>
+<p>A (native) <code>async def</code> defined coroutine can only do two things, <code>await</code>
+and <code>return</code>. An error is raised if a <code>yield</code> is within a native
+coroutine. The decorator based coroutine uses <code>yield from</code> instead of
+<code>await</code>.</p>
+<p>&nbsp;</p>
+<h2>Other Libraries</h2>
+<p>&nbsp;</p>
+<h2>Curio</h2>
+<p>A library that's similar to and can replace the asyncio event loop for
+concurrent programming. It uses the same async/await syntax and
+cooperative multitasking just like asyncio. However, the way it handles
+events is very different and the API is much smaller.
+<a href="https://curio.readthedocs.io/en/latest/">Curio</a> performs around 20%
+faster than comparable asyncio code.</p>
+<h2>Trio</h2>
+<p><a href="https://trio.readthedocs.io/en/latest/index.html">Trio</a> is also an
+async/await native I/O library for Python. Its main purpose is to help
+you write programs that do multiple things at the same time with
+parallelized I/O. Curio draws inspiration from many sources including
+Dave Beazley's Curio.</p>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>Trio is not production ready.</p>
+</blockquote>
+<p>&nbsp;</p>
+<h2>A Few More Examples</h2>
+<p>&nbsp;</p>
+<h2>CPU Bound Synchronous</h2>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">timeit</span>
+
+
+<span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+
+
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+
+<span class="n">fib</span><span class="p">(</span><span class="mi">33</span><span class="p">)</span>
+<span class="n">fib</span><span class="p">(</span><span class="mi">34</span><span class="p">)</span>
+
+<span class="n">elapsed</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Sync took </span><span class="si">%0.2f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="n">elapsed</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>&gt; python sync_fib.py
+Sync took <span class="m">2</span>.91s
+</pre></div>
+
+
+<h2>CPU Bound Multi-thread</h2>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">timeit</span>
+
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
+
+
+<span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">f1</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">fib</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="mi">33</span><span class="p">,))</span>
+    <span class="n">f2</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">fib</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="mi">34</span><span class="p">,))</span>
+
+    <span class="n">f1</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">f2</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="n">f1</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+    <span class="n">f2</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+
+<span class="n">main</span><span class="p">()</span>
+
+<span class="n">elapsed</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Thread took </span><span class="si">%0.2f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="n">elapsed</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>&gt; python thread_fib.py
+Thread took <span class="m">2</span>.86s  
+</pre></div>
+
+
+<ul>
+<li>Ended up taking about the same time as the synchronous code. Not
+    surprising since each thread is utilizing 100% CPU during execution.
+    The GIL blocks the threads from running concurrently.</li>
+</ul>
+<h2>CPU Bound Multi-process w/ asyncio</h2>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">timeit</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">await</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">await</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">fib</span><span class="p">(</span><span class="mi">33</span><span class="p">),</span> <span class="n">fib</span><span class="p">(</span><span class="mi">34</span><span class="p">)]</span>
+    <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span>
+
+
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">elapsed</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Async took </span><span class="si">%0.2f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="n">elapsed</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>&gt; python async_fib.py
+Async took <span class="m">6</span>.34s  
+</pre></div>
+
+
+<ul>
+<li>What!? Isn't asyncio great for CPU bound concurrency? The problem
+    here is a bad algorithm and the overhead of context switching.
+    Because fib is recursive every call to a new fib coroutine adds a
+    task to the queue. This adds up quickly and requires an excessive
+    number of context switches.</li>
+</ul>
+<h2>With Iterative Fibonacci Algorithm</h2>
+<div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="n">fib</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">prev</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">prev</span><span class="p">,</span> <span class="n">fib</span> <span class="o">=</span> <span class="n">fib</span><span class="p">,</span> <span class="n">fib</span> <span class="o">+</span> <span class="n">prev</span>
+<span class="o">...</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>&gt; python sync_fib_iter.py
+Sync took <span class="m">1</span>.46s
+&gt; python thread_fib_iter.py
+Thread took <span class="m">1</span>.74s
+&gt; python async_fib_iter.py
+Async took <span class="m">0</span>.50s  
+</pre></div>
+
+
+<ul>
+<li>Now we don't have all of the context switches that come with a
+    recursive algorithm.</li>
+</ul>
+<h2>Asyncio Iterative Fibonacci Example Using Process Pool</h2>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">concurrent.futures</span>
+<span class="kn">import</span> <span class="nn">timeit</span>
+
+
+<span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>  
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="n">fib</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">prev</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">prev</span><span class="p">,</span> <span class="n">fib</span> <span class="o">=</span> <span class="n">fib</span><span class="p">,</span> <span class="n">fib</span> <span class="o">+</span> <span class="n">prev</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">executor</span> <span class="o">=</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ProcessPoolExecutor</span><span class="p">()</span>  
+    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+
+    <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="n">fib</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>  
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">11000</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span>
+
+
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">elapsed</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Async took </span><span class="si">%0.2f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="n">elapsed</span><span class="p">)</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>Here the fib function is blocking. It is not a coroutine thus we
+    need some way to run the function in a separate process.</p>
+</li>
+<li>
+<p>To do so we can use a process pool from the concurrent futures
+    library.</p>
+</li>
+<li>
+<p>We generate a list of tasks each running fib in the process pool.</p>
+</li>
+</ul>
+<h2>First Completed</h2>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">timeit</span>
+<span class="kn">from</span> <span class="nn">concurrent.futures</span> <span class="kn">import</span> <span class="n">FIRST_COMPLETED</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Start sleep&#39;</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Stop sleep&#39;</span><span class="p">)</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">8</span><span class="p">),</span> <span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">9</span><span class="p">)]</span>
+    <span class="n">done</span><span class="p">,</span> <span class="n">pending</span> <span class="o">=</span> <span class="n">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span>
+        <span class="n">tasks</span><span class="p">,</span>
+        <span class="n">return_when</span><span class="o">=</span><span class="n">FIRST_COMPLETED</span>  
+    <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">pending</span><span class="p">:</span>
+        <span class="n">future</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>  
+
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">elapsed</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;First took </span><span class="si">%0.2f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="n">elapsed</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>Start sleep
+Start sleep
+Stop sleep
+Firt took <span class="m">0</span>.80s  
+</pre></div>
+
+
+<ul>
+<li>
+<p>Call asyncio.wait with FIRST_COMPLETED flag to stop after first
+    task completes.</p>
+</li>
+<li>
+<p>Any tasks/futures that have not completed should be canceled.</p>
+</li>
+<li>
+<p>Execution time is same as the shortest sleep call.</p>
+</li>
+</ul>
+<h2>How does Curio stack up against asyncio?</h2>
+<p>As you can see Curio syntax is closer to threading than asycnio.
+However, it is also single threaded just like asyncio.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">curio</span>
+<span class="kn">import</span> <span class="nn">timeit</span>
+
+
+<span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="n">fib</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">prev</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">prev</span><span class="p">,</span> <span class="n">fib</span> <span class="o">=</span> <span class="n">fib</span><span class="p">,</span> <span class="n">fib</span> <span class="o">+</span> <span class="n">prev</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">tasks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">11000</span><span class="p">):</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">await</span> <span class="n">curio</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="n">curio</span><span class="o">.</span><span class="n">run_in_process</span><span class="p">,</span> <span class="n">fib</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+        <span class="n">await</span> <span class="n">task</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+
+<span class="n">curio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+
+<span class="n">elapsed</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Curio took </span><span class="si">%0.2f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="n">elapsed</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>Curio took <span class="m">0</span>.46s  
+</pre></div>
+
+
+<ul>
+<li>Slightly more efficient than asyncio. Not surprising since Curio is
+    a leaner api and a bit more lightweight.</li>
+</ul>
+        </div>
+        <div class="post_list">
+            <span>By </span>
+            <a href="http://localhost:8000/author/sean-marlow.html">@Sean Marlow</a>
+            <span> in </span>
+            <span class="post_category"><a href="http://localhost:8000/category/python.html" rel="bookmark" title="Permalink to Python">[ Python ]</a></span>
+            <span class="post_date">Sat 26 January 2019</span>
+            <div><span>Tags : </span>
+                <span><a href="http://localhost:8000/tag/async.html">#async, </a></span>
+                <span><a href="http://localhost:8000/tag/python.html">#python, </a></span>
+            </div>
+
+        </div>
+    </article>
+</section>
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a href="https://parbhatpuri.com/">@parbhat</a>.
+    </p>
+  </footer>
+
+
+</body>
+</html>
