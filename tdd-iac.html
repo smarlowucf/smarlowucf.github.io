@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Using TDD to boost your IaC strategy &ndash; smarlowucf</title>
+
+    <!-- Meta -->
+    <meta name="description" content="smarlowucf &ndash; ">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Social -->
+    <meta property="article:author" content="Sean Marlow" />
+    <meta property="article:section" content="Python" />
+    <meta property="article:published_time" content="2020-01-13" />
+
+    <meta property="og:type" content="article"/>
+    <meta property="og:title" content="Using TDD to boost your IaC strategy"/>
+    <meta property="og:description" content="Using TDD with Pytest to drive production of Salt states for an example Flask app."/>
+    <meta property="og:site_name" content="smarlowucf" />
+    <meta property="og:url" content="https://smarlowucf.github.io/tdd-iac.html"/>
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Using TDD to boost your IaC strategy">
+    <meta name="twitter:description" content="Using TDD with Pytest to drive production of Salt states for an example Flask app.">
+    <meta name="twitter:url" content="https://smarlowucf.github.io/tdd-iac.html">
+
+    <!-- Feed -->
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:regular,bold">
+    <link rel="stylesheet" type="text/css" href="https://smarlowucf.github.io/theme/css/w3.css">
+    <link rel="stylesheet" type="text/css" href="https://smarlowucf.github.io/theme/css/style.css">
+    <link rel="stylesheet" type="text/css" href="https://smarlowucf.github.io/theme/css/jqcloud.css">
+    <link rel="stylesheet" type="text/css" href="https://smarlowucf.github.io/theme/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="https://smarlowucf.github.io/theme/css/pygments.css">
+
+    <!-- Icon -->
+
+    <!-- JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://smarlowucf.github.io/theme/js/jqcloud.min.js"></script>
+  </head>
+
+  <body>
+    <div class="w3-row w3-card w3-white">
+      <header id="header">
+        <a href="https://smarlowucf.github.io" id="header-logo" title="Home">SM</a>
+        <nav id="header-menu">
+          <ul>
+            <li><a href="https://smarlowucf.github.io/pages/projects.html">Projects</a></li>
+            <li class="w3-bottombar w3-border-white w3-hover-border-green" ><a href="https://smarlowucf.github.io/category/booknotes.html">Booknotes</a></li>
+            <li class="w3-bottombar w3-border-white w3-hover-border-green" style="font-weight: bold;"><a href="https://smarlowucf.github.io/category/python.html">Python</a></li>
+          </ul>
+        </nav>
+      </header>
+    </div>
+
+
+
+    <br><br><br>
+
+    <article>
+      <header class="w3-container col-main">
+        <h1>Using TDD to boost your IaC strategy</h1>
+        <div class="post-info">
+          <div class="w3-opacity w3-margin-right w3-margin-bottom" style="flex-grow: 1;">
+            <span><time datetime="2020-01-13T16:34:00-06:00">Mon 13 January 2020</time> in <a href="https://smarlowucf.github.io/category/python.html" title="All articles in category Python">Python</a></span>
+          </div>
+          <div>
+            <span class="w3-tag w3-light-grey w3-text-green w3-hover-green">
+              <a href="https://smarlowucf.github.io/tag/python.html" title="All articles with Python tag">#python</a>
+            </span>
+            <span class="w3-tag w3-light-grey w3-text-green w3-hover-green">
+              <a href="https://smarlowucf.github.io/tag/iac.html" title="All articles with Iac tag">#iac</a>
+            </span>
+            <span class="w3-tag w3-light-grey w3-text-green w3-hover-green">
+              <a href="https://smarlowucf.github.io/tag/tdd.html" title="All articles with Tdd tag">#tdd</a>
+            </span>
+            <span class="w3-tag w3-light-grey w3-text-green w3-hover-green">
+              <a href="https://smarlowucf.github.io/tag/testing.html" title="All articles with Testing tag">#testing</a>
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <br>
+
+
+      <div class="col-main w3-container">
+        <section id="content">
+          <div class="section" id="overview">
+<h2>Overview</h2>
+<p>The goal of this presentation is to provide an example of how you can test
+software defined infrastructure code with Python integration tests.</p>
+<div class="section" id="tech-stack">
+<h3>Tech stack</h3>
+<ul class="simple">
+<li>Pytest with Testinfra plugin for integration tests</li>
+<li>Salt states for infrastructure configuration</li>
+<li>Example Flask app that provides pancake ingredients</li>
+<li>Terraform for automating the test suite (if time permits)</li>
+</ul>
+</div>
+<div class="section" id="app-requirements">
+<h3>App requirements</h3>
+<ul class="simple">
+<li>Python3</li>
+<li>Flask</li>
+<li>Apache2</li>
+<li>mod_wsgi</li>
+</ul>
+</div>
+<div class="section" id="app-info">
+<h3>App info</h3>
+<p>The example app is a simple Flask API that exposes four endpoints related
+to pancake types and ingredients. The endpoints include:</p>
+<ul class="simple">
+<li>GET All: /pancakes/</li>
+<li>GET Type: /pancakes/banana</li>
+<li>Add Type (POST): /pancakes/</li>
+<li>DELETE Type: /pancakes/fake</li>
+</ul>
+<p>The app runs in Apache2 with the mod_wsgi plugin and is Python3 based. The data
+is stored in a json file which by default is located at /user/lib/pancake/pancakes.json.</p>
+</div>
+<div class="section" id="links">
+<h3>Links</h3>
+<ul class="simple">
+<li>Example Flask app: <a class="reference external" href="https://github.com/smarlowucf/glowing-pancake">https://github.com/smarlowucf/glowing-pancake</a></li>
+<li>App config (tests &amp; states): <a class="reference external" href="https://github.com/smarlowucf/glowing-pancake-config">https://github.com/smarlowucf/glowing-pancake-config</a></li>
+<li>Presentation files: <a class="reference external" href="https://github.com/smarlowucf/presentations/tree/master/tdd_iac">https://github.com/smarlowucf/presentations/tree/master/tdd_iac</a></li>
+<li>Pytest: <a class="reference external" href="https://docs.pytest.org/en/latest/">https://docs.pytest.org/en/latest/</a></li>
+<li>Testinfra: <a class="reference external" href="https://testinfra.readthedocs.io/en/latest/">https://testinfra.readthedocs.io/en/latest/</a></li>
+<li>Salt: <a class="reference external" href="https://docs.saltstack.com/en/latest/">https://docs.saltstack.com/en/latest/</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="writing-tests">
+<h2>Writing tests</h2>
+<div class="section" id="pancake-user">
+<h3>Pancake user</h3>
+<p>Ensure we have a pancake user that the app can run as. We want the users
+home directory to be /var/lib/pancake and the user should have a group with
+the same name.</p>
+<p>The host parameter is a fixture provided by Testinfra. This is the main module
+which we will focus on for the remainder of the test suite.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_pancake_user</span><span class="p">(</span><span class="n">host</span><span class="p">):</span>
+<span class="hll">    <span class="n">user</span> <span class="o">=</span> <span class="n">host</span><span class="o">.</span><span class="n">user</span><span class="p">(</span><span class="s1">&#39;pancake&#39;</span><span class="p">)</span>
+</span>
+    <span class="k">assert</span> <span class="n">user</span><span class="o">.</span><span class="n">group</span> <span class="o">==</span> <span class="s1">&#39;users&#39;</span>
+    <span class="k">assert</span> <span class="s1">&#39;pancake&#39;</span> <span class="ow">in</span> <span class="n">user</span><span class="o">.</span><span class="n">groups</span>
+<span class="hll">    <span class="k">assert</span> <span class="n">user</span><span class="o">.</span><span class="n">home</span> <span class="o">==</span> <span class="s1">&#39;/var/lib/pancake&#39;</span>
+</span></pre></div>
+</td></tr></table></div>
+<div class="section" id="packages">
+<h3>Packages</h3>
+<p>Check that all required packages are installed. This test is using the
+paramterize function from Pytest. It allows us to re-use a given test
+based on a list of arguments. Here the test runs four times to confirm
+all packages are installed.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="hll"><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="p">[</span>
+</span><span class="hll">    <span class="p">(</span><span class="s1">&#39;apache2&#39;</span><span class="p">),</span>
+</span><span class="hll">    <span class="p">(</span><span class="s1">&#39;python3-Flask&#39;</span><span class="p">),</span>
+</span><span class="hll">    <span class="p">(</span><span class="s1">&#39;apache2-mod_wsgi-python3&#39;</span><span class="p">),</span>
+</span><span class="hll">    <span class="p">(</span><span class="s1">&#39;git&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="p">])</span>
+</span><span class="k">def</span> <span class="nf">test_required_packages</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">host</span><span class="o">.</span><span class="n">package</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">is_installed</span>
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="apache-service">
+<h3>Apache service</h3>
+<p>Make sure Apache service is running and enabled.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_apache2_service</span><span class="p">(</span><span class="n">host</span><span class="p">):</span>
+<span class="hll">    <span class="n">srv</span> <span class="o">=</span> <span class="n">host</span><span class="o">.</span><span class="n">service</span><span class="p">(</span><span class="s1">&#39;apache2&#39;</span><span class="p">)</span>
+</span>
+    <span class="k">assert</span> <span class="n">srv</span><span class="o">.</span><span class="n">is_running</span>
+    <span class="k">assert</span> <span class="n">srv</span><span class="o">.</span><span class="n">is_enabled</span>
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="configuration-files">
+<h3>Configuration files</h3>
+<p>Using the file module from the host fixture we can ensure that all config
+files exist, have the correct owner and the correct permissions.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;/var/lib/pancake/wsgi.py&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;/etc/apache2/vhosts.d/pancake.conf&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;/var/lib/pancake/pancakes.json&#39;</span><span class="p">)</span>
+<span class="p">])</span>
+<span class="k">def</span> <span class="nf">test_pancake_config_files</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="hll">    <span class="n">wsgi</span> <span class="o">=</span> <span class="n">host</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span>
+    <span class="k">assert</span> <span class="n">wsgi</span><span class="o">.</span><span class="n">exists</span>
+<span class="hll">    <span class="k">assert</span> <span class="n">wsgi</span><span class="o">.</span><span class="n">is_file</span>
+</span>    <span class="k">assert</span> <span class="n">wsgi</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="s1">&#39;pancake&#39;</span>
+    <span class="k">assert</span> <span class="n">wsgi</span><span class="o">.</span><span class="n">group</span> <span class="o">==</span> <span class="s1">&#39;pancake&#39;</span>
+    <span class="k">assert</span> <span class="nb">oct</span><span class="p">(</span><span class="n">wsgi</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;0o644&#39;</span>
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="project-git-directory">
+<h3>Project git directory</h3>
+<p>The file module can also be used to check directory attributes. Here we ensure
+the project git directory is in place and owned by the main instance user.
+For openSUSE Leap EC2 images this user is ec2-user.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_pancake_repo</span><span class="p">(</span><span class="n">host</span><span class="p">):</span>
+<span class="hll">    <span class="n">wsgi</span> <span class="o">=</span> <span class="n">host</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="s1">&#39;/home/ec2-user/projects/pancake&#39;</span><span class="p">)</span>
+</span>
+    <span class="k">assert</span> <span class="n">wsgi</span><span class="o">.</span><span class="n">exists</span>
+<span class="hll">    <span class="k">assert</span> <span class="n">wsgi</span><span class="o">.</span><span class="n">is_directory</span>
+</span>    <span class="k">assert</span> <span class="n">wsgi</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="s1">&#39;ec2-user&#39;</span>
+    <span class="k">assert</span> <span class="n">wsgi</span><span class="o">.</span><span class="n">group</span> <span class="o">==</span> <span class="s1">&#39;users&#39;</span>
+    <span class="k">assert</span> <span class="nb">oct</span><span class="p">(</span><span class="n">wsgi</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;0o755&#39;</span>
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="instance-os">
+<h3>Instance OS</h3>
+<p>Confirm the instance is indeed a Leap 15.1 instance based on the
+/etc/os-release data. This uses a pytest fixture which allows for
+code reusability. The fixture is inline but it could also be stored in
+a conftest.py file which would make it usable by all test modules.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">()</span>
+</span><span class="k">def</span> <span class="nf">get_release_value</span><span class="p">(</span><span class="n">host</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+        <span class="n">release</span> <span class="o">=</span> <span class="n">host</span><span class="o">.</span><span class="n">file</span><span class="p">(</span><span class="s1">&#39;/etc/os-release&#39;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">key</span> <span class="o">+=</span> <span class="s1">&#39;=&#39;</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">release</span><span class="o">.</span><span class="n">content_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">):]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">value</span>
+    <span class="k">return</span> <span class="n">f</span>
+
+<span class="hll"><span class="k">def</span> <span class="nf">test_instance_os_name</span><span class="p">(</span><span class="n">get_release_value</span><span class="p">):</span>
+</span><span class="hll">    <span class="n">name</span> <span class="o">=</span> <span class="n">get_release_value</span><span class="p">(</span><span class="s1">&#39;PRETTY_NAME&#39;</span><span class="p">)</span>
+</span>    <span class="k">assert</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;openSUSE Leap 15.1&#39;</span>
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="app-endpoints">
+<h3>App endpoints</h3>
+<p>This step is optional. The app is deployed by configuration management
+but would ideally be tested by it's own CI/CD pipeline. These examples
+show how you can run arbitrary commands against the instance using the
+host run module.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_pancake_app_get_types</span><span class="p">(</span><span class="n">host</span><span class="p">):</span>
+<span class="hll">    <span class="n">cmd</span> <span class="o">=</span> <span class="n">host</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">&#39;curl http://localhost:5000/pancakes/&#39;</span><span class="p">)</span>
+</span>
+<span class="hll">    <span class="k">assert</span> <span class="n">cmd</span><span class="o">.</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span>
+</span><span class="hll">    <span class="k">assert</span> <span class="s1">&#39;banana&#39;</span> <span class="ow">in</span> <span class="n">cmd</span><span class="o">.</span><span class="n">stdout</span>
+</span>    <span class="k">assert</span> <span class="s1">&#39;plain&#39;</span> <span class="ow">in</span> <span class="n">cmd</span><span class="o">.</span><span class="n">stdout</span>
+
+
+<span class="k">def</span> <span class="nf">test_pancake_app_get_type</span><span class="p">(</span><span class="n">host</span><span class="p">):</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="n">host</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">&#39;curl http://localhost:5000/pancakes/banana&#39;</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">cmd</span><span class="o">.</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="s1">&#39;banana&#39;</span> <span class="ow">in</span> <span class="n">cmd</span><span class="o">.</span><span class="n">stdout</span>
+    <span class="k">assert</span> <span class="s1">&#39;walnuts&#39;</span> <span class="ow">in</span> <span class="n">cmd</span><span class="o">.</span><span class="n">stdout</span>
+
+
+<span class="k">def</span> <span class="nf">test_pancake_app_add_delete_type</span><span class="p">(</span><span class="n">host</span><span class="p">):</span>
+    <span class="c1"># Add fake pancake type with no ingredients</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="n">host</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="s1">&#39;curl -H &quot;Content-Type: application/json&quot; &#39;</span>
+        <span class="s1">&#39;-d </span><span class="se">\&#39;</span><span class="s1">{&quot;name&quot;: &quot;fake&quot;, &quot;ingredients&quot;: []}</span><span class="se">\&#39;</span><span class="s1"> &#39;</span>
+        <span class="s1">&#39;http://localhost:5000/pancakes/&#39;</span>
+    <span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">cmd</span><span class="o">.</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="s1">&#39;Pancake added&#39;</span> <span class="ow">in</span> <span class="n">cmd</span><span class="o">.</span><span class="n">stdout</span>
+    <span class="k">assert</span> <span class="n">host</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">&#39;curl http://localhost:5000/pancakes/fake&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span>
+
+    <span class="c1"># Delete fake pancake type</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="n">host</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="s1">&#39;curl -X DELETE curl http://localhost:5000/pancakes/fake&#39;</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">cmd</span><span class="o">.</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="s1">&#39;Pancake deleted&#39;</span> <span class="ow">in</span> <span class="n">cmd</span><span class="o">.</span><span class="n">stdout</span>
+
+    <span class="c1"># Confirm fake type deleted</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">host</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">&#39;curl http://localhost:5000/pancakes/fake&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span>
+    <span class="k">assert</span> <span class="s1">&#39;Unable to retrieve pancake type&#39;</span> <span class="ow">in</span> <span class="n">out</span>
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="useful-plugins-options">
+<h3>Useful plugins/options</h3>
+<ul class="simple">
+<li>pytest-xdist: Run tests in parallel on multiple cores</li>
+<li>pytest --lf: Run only failed tests from previous execution</li>
+<li>Fixtures: To make code modular and scalable</li>
+<li>Parameterize: To re-run tests with different arguments</li>
+</ul>
+</div>
+</div>
+<div class="section" id="building-salt-states">
+<h2>Building Salt states</h2>
+<div class="section" id="confirm-tests-fail">
+<h3>Confirm tests fail</h3>
+<p>Now that the test suite is in place we can run everything to confirm all tests
+fail. The tests are are run against a newly provisioned openSUSE Leap 15.1
+instance in AWS.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 tests/test_pancake.py
+<span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">==========================</span>
+platform linux -- Python <span class="m">3</span>.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
+/home/user/projects/venvs/mash/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/user
+plugins: testinfra-3.2.0, cov-2.8.1
+collected <span class="m">14</span> items
+
+test_pancake_user FAILED                                      <span class="o">[</span>  <span class="m">7</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>apache2<span class="o">]</span> FAILED                         <span class="o">[</span> <span class="m">14</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>python3-Flask<span class="o">]</span> FAILED                   <span class="o">[</span> <span class="m">21</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>apache2-mod_wsgi-python3<span class="o">]</span> FAILED        <span class="o">[</span> <span class="m">28</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>git<span class="o">]</span> FAILED                             <span class="o">[</span> <span class="m">35</span>%<span class="o">]</span>
+test_apache2_service FAILED                                   <span class="o">[</span> <span class="m">42</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/var/lib/pancake/wsgi.py<span class="o">]</span> FAILED     <span class="o">[</span> <span class="m">50</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/etc/apache2/vhosts.d/pancake.conf<span class="o">]</span> FAILED <span class="o">[</span> <span class="m">57</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/var/lib/pancake/pancakes.json<span class="o">]</span> FAILED <span class="o">[</span> <span class="m">64</span>%<span class="o">]</span>
+test_pancake_repo FAILED                                      <span class="o">[</span> <span class="m">71</span>%<span class="o">]</span>
+<span class="hll">test_instance_os_name PASSED                                  <span class="o">[</span> <span class="m">78</span>%<span class="o">]</span>
+</span>test_pancake_app_get_types FAILED                             <span class="o">[</span> <span class="m">85</span>%<span class="o">]</span>
+test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">92</span>%<span class="o">]</span>
+test_pancake_app_add_delete_type FAILED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
+
+<span class="hll"><span class="o">=============================</span> <span class="m">13</span> failed, <span class="m">1</span> passed in <span class="m">4</span>.62s <span class="o">===================</span>
+</span></pre></div>
+</td></tr></table><p>Everything fails except the os name check. This is expected as os-release
+should already match the proper value.</p>
+</div>
+<div class="section" id="add-states-for-pancake-user">
+<h3>Add states for pancake user</h3>
+<p>The first state will create a pancake user and a group with the same name.
+The user is added to the group and the home directory is set to
+/var/lib/pancake.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">pancake-group</span><span class="p">:</span>
+<span class="hll">  <span class="nt">group.present</span><span class="p">:</span>
+</span>    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pancake</span>
+
+<span class="nt">pancake-user</span><span class="p">:</span>
+<span class="hll">  <span class="nt">user.present</span><span class="p">:</span>
+</span>    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pancake</span>
+    <span class="p p-Indicator">-</span> <span class="nt">fullname</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Pancake App User</span>
+<span class="hll">    <span class="p p-Indicator">-</span> <span class="nt">home</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/var/lib/pancake</span>
+</span>    <span class="p p-Indicator">-</span> <span class="nt">groups</span><span class="p">:</span>
+<span class="hll">      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">pancake</span>
+</span>    <span class="p p-Indicator">-</span> <span class="nt">require</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">group</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pancake</span>
+  <span class="nt">group.present</span><span class="p">:</span> <span class="p p-Indicator">[]</span>
+</pre></div>
+</td></tr></table><p>Now we can apply the state to create the new user:</p>
+&nbsp;<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll">$ sudo salt-call --local state.sls pancake.user
+</span>
+...
+
+Summary <span class="k">for</span> <span class="nb">local</span>
+
+Succeeded: <span class="m">3</span> <span class="o">(</span><span class="nv">changed</span><span class="o">=</span><span class="m">3</span><span class="o">)</span>
+Failed:    <span class="m">0</span>
+
+Total states run:     <span class="m">3</span>
+Total run time: <span class="m">145</span>.654 ms
+</pre></div>
+</td></tr></table><p>All three states were applied successfully so we can re-run the test suite
+to confirm that the user test is now passing.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 tests/test_pancake.py
+<span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">=========================</span>
+platform linux -- Python <span class="m">3</span>.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
+/home/user/projects/venvs/mash/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/user
+plugins: testinfra-3.2.0, cov-2.8.1
+collected <span class="m">14</span> items
+
+<span class="hll">test_pancake_user PASSED                                      <span class="o">[</span>  <span class="m">7</span>%<span class="o">]</span>
+</span>test_required_packages<span class="o">[</span>apache2<span class="o">]</span> FAILED                         <span class="o">[</span> <span class="m">14</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>python3-Flask<span class="o">]</span> FAILED                   <span class="o">[</span> <span class="m">21</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>apache2-mod_wsgi-python3<span class="o">]</span> FAILED        <span class="o">[</span> <span class="m">28</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>git<span class="o">]</span> FAILED                             <span class="o">[</span> <span class="m">35</span>%<span class="o">]</span>
+test_apache2_service FAILED                                   <span class="o">[</span> <span class="m">42</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/var/lib/pancake/wsgi.py<span class="o">]</span> FAILED     <span class="o">[</span> <span class="m">50</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/etc/apache2/vhosts.d/pancake.conf<span class="o">]</span> FAILED <span class="o">[</span> <span class="m">57</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/var/lib/pancake/pancakes.json<span class="o">]</span> FAILED <span class="o">[</span> <span class="m">64</span>%<span class="o">]</span>
+test_pancake_repo FAILED                                      <span class="o">[</span> <span class="m">71</span>%<span class="o">]</span>
+test_instance_os_name PASSED                                  <span class="o">[</span> <span class="m">78</span>%<span class="o">]</span>
+test_pancake_app_get_types FAILED                             <span class="o">[</span> <span class="m">85</span>%<span class="o">]</span>
+test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">92</span>%<span class="o">]</span>
+test_pancake_app_add_delete_type FAILED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
+
+<span class="hll"><span class="o">=============================</span> <span class="m">12</span> failed, <span class="m">2</span> passed in <span class="m">6</span>.50s <span class="o">===================</span>
+</span></pre></div>
+</td></tr></table></div>
+<div class="section" id="add-states-for-apache-server">
+<h3>Add states for Apache server</h3>
+<p>There are multiple states required for the Apache server. The app requires
+two packages (apache2, apache2-mod_wsgi-python3) and the apache2 service
+to be running and enabled.</p>
+<p>Also we have the vhost configuration file and the wsgi Python module which
+mod_wsgi will be using to run the Flask app.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">include</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">pancake.user</span>
+
+<span class="nt">apache2</span><span class="p">:</span>
+<span class="hll">  <span class="nt">pkg.latest</span><span class="p">:</span>
+</span>    <span class="p p-Indicator">-</span> <span class="nt">refresh</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="hll">  <span class="nt">service.running</span><span class="p">:</span>
+</span>    <span class="p p-Indicator">-</span> <span class="nt">enable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+    <span class="p p-Indicator">-</span> <span class="nt">reload</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+    <span class="p p-Indicator">-</span> <span class="nt">watch</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">pkg</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">apache2</span>
+
+<span class="nt">apache2-mod_wsgi-python3</span><span class="p">:</span>
+<span class="hll">  <span class="nt">pkg.latest</span><span class="p">:</span>
+</span>    <span class="p p-Indicator">-</span> <span class="nt">refresh</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+    <span class="p p-Indicator">-</span> <span class="nt">require</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">pkg</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">apache2</span>
+
+<span class="hll"><span class="nt">/etc/apache2/vhosts.d</span><span class="p">:</span>
+</span><span class="hll">  <span class="nt">file.directory</span><span class="p">:</span>
+</span>    <span class="p p-Indicator">-</span> <span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">root</span>
+    <span class="p p-Indicator">-</span> <span class="nt">group</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">root</span>
+    <span class="p p-Indicator">-</span> <span class="nt">mode</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">755</span>
+    <span class="p p-Indicator">-</span> <span class="nt">makedirs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="hll"><span class="nt">/var/lib/pancake/wsgi.py</span><span class="p">:</span>
+</span><span class="hll">  <span class="nt">file.managed</span><span class="p">:</span>
+</span><span class="hll">    <span class="p p-Indicator">-</span> <span class="nt">source</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">salt://pancake/files/wsgi.py</span>
+</span>    <span class="p p-Indicator">-</span> <span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pancake</span>
+    <span class="p p-Indicator">-</span> <span class="nt">group</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pancake</span>
+    <span class="p p-Indicator">-</span> <span class="nt">mode</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">644</span>
+    <span class="p p-Indicator">-</span> <span class="nt">require</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">sls</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pancake.user</span>
+
+<span class="hll"><span class="nt">/etc/apache2/vhosts.d/pancake.conf</span><span class="p">:</span>
+</span><span class="hll">  <span class="nt">file.managed</span><span class="p">:</span>
+</span><span class="hll">    <span class="p p-Indicator">-</span> <span class="nt">source</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">salt://pancake/files/pancake.conf</span>
+</span>    <span class="p p-Indicator">-</span> <span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pancake</span>
+    <span class="p p-Indicator">-</span> <span class="nt">group</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pancake</span>
+    <span class="p p-Indicator">-</span> <span class="nt">mode</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">644</span>
+    <span class="p p-Indicator">-</span> <span class="nt">require</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">file</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/apache2/vhosts.d</span>
+      <span class="p p-Indicator">-</span> <span class="nt">sls</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pancake.user</span>
+</pre></div>
+</td></tr></table><p>We apply the new states:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll">$ sudo salt-call --local state.sls pancake.apache
+</span>
+...
+
+Summary <span class="k">for</span> <span class="nb">local</span>
+
+Succeeded: <span class="m">9</span> <span class="o">(</span><span class="nv">changed</span><span class="o">=</span><span class="m">5</span><span class="o">)</span>
+Failed:    <span class="m">0</span>
+
+Total states run:     <span class="m">9</span>
+Total run time:  <span class="m">65</span>.174 s
+</pre></div>
+</td></tr></table><p>And finally re-run the test suite to confirm more tests are passing.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 tests/test_pancake.py
+<span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">==========================</span>
+platform linux -- Python <span class="m">3</span>.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
+/home/user/projects/venvs/mash/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/user
+plugins: testinfra-3.2.0, cov-2.8.1
+collected <span class="m">14</span> items
+
+test_pancake_user PASSED                                      <span class="o">[</span>  <span class="m">7</span>%<span class="o">]</span>
+<span class="hll">test_required_packages<span class="o">[</span>apache2<span class="o">]</span> PASSED                         <span class="o">[</span> <span class="m">14</span>%<span class="o">]</span>
+</span>test_required_packages<span class="o">[</span>python3-Flask<span class="o">]</span> FAILED                   <span class="o">[</span> <span class="m">21</span>%<span class="o">]</span>
+<span class="hll">test_required_packages<span class="o">[</span>apache2-mod_wsgi-python3<span class="o">]</span> PASSED        <span class="o">[</span> <span class="m">28</span>%<span class="o">]</span>
+</span>test_required_packages<span class="o">[</span>git<span class="o">]</span> FAILED                             <span class="o">[</span> <span class="m">35</span>%<span class="o">]</span>
+<span class="hll">test_apache2_service PASSED                                   <span class="o">[</span> <span class="m">42</span>%<span class="o">]</span>
+</span><span class="hll">test_pancake_config_files<span class="o">[</span>/var/lib/pancake/wsgi.py<span class="o">]</span> PASSED     <span class="o">[</span> <span class="m">50</span>%<span class="o">]</span>
+</span><span class="hll">test_pancake_config_files<span class="o">[</span>/etc/apache2/vhosts.d/pancake.conf<span class="o">]</span> PASSED <span class="o">[</span> <span class="m">57</span>%<span class="o">]</span>
+</span>test_pancake_config_files<span class="o">[</span>/var/lib/pancake/pancakes.json<span class="o">]</span> FAILED <span class="o">[</span> <span class="m">64</span>%<span class="o">]</span>
+test_pancake_repo FAILED                                      <span class="o">[</span> <span class="m">71</span>%<span class="o">]</span>
+test_instance_os_name PASSED                                  <span class="o">[</span> <span class="m">78</span>%<span class="o">]</span>
+test_pancake_app_get_types FAILED                             <span class="o">[</span> <span class="m">85</span>%<span class="o">]</span>
+test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">92</span>%<span class="o">]</span>
+test_pancake_app_add_delete_type FAILED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
+
+<span class="o">=============================</span> <span class="m">7</span> failed, <span class="m">7</span> passed in <span class="m">6</span>.81s <span class="o">=====================</span>
+</pre></div>
+</td></tr></table></div>
+<div class="section" id="add-states-for-pancake-app">
+<h3>Add states for pancake app</h3>
+<p>The final set of states are for the pancake app itself. These states will pull
+the Flask code from GitHub and install the app in development mode. Prior to
+this both the Git and Flask system packages are installed if necessary. Then
+the pancake json database file is copied to the pancake user home directory.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">include</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">pancake.user</span>
+
+<span class="hll"><span class="nt">/home/ec2-user/projects/pancake</span><span class="p">:</span>
+</span><span class="hll">  <span class="nt">file.directory</span><span class="p">:</span>
+</span>    <span class="p p-Indicator">-</span> <span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ec2-user</span>
+    <span class="p p-Indicator">-</span> <span class="nt">group</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">users</span>
+    <span class="p p-Indicator">-</span> <span class="nt">mode</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">755</span>
+    <span class="p p-Indicator">-</span> <span class="nt">makedirs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="nt">git package is installed</span><span class="p">:</span>
+<span class="hll">  <span class="nt">pkg.installed</span><span class="p">:</span>
+</span><span class="hll">    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">git</span>
+</span>
+<span class="nt">python3-Flask installed</span><span class="p">:</span>
+<span class="hll">  <span class="nt">pkg.installed</span><span class="p">:</span>
+</span><span class="hll">    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">python3-Flask</span>
+</span>
+<span class="nt">pancake-code</span><span class="p">:</span>
+<span class="hll">  <span class="nt">git.latest</span><span class="p">:</span>
+</span><span class="hll">    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/smarlowucf/glowing-pancake.git</span>
+</span><span class="hll">    <span class="p p-Indicator">-</span> <span class="nt">target</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/home/ec2-user/projects/pancake/</span>
+</span>    <span class="p p-Indicator">-</span> <span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ec2-user</span>
+    <span class="p p-Indicator">-</span> <span class="nt">branch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">master</span>
+    <span class="p p-Indicator">-</span> <span class="nt">require</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">pkg</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">git</span>
+      <span class="p p-Indicator">-</span> <span class="nt">pkg</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">python3-Flask</span>
+
+<span class="nt">pancake-dev</span><span class="p">:</span>
+<span class="hll">  <span class="nt">cmd.run</span><span class="p">:</span>
+</span><span class="hll">    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sudo python3 setup.py develop</span>
+</span>    <span class="p p-Indicator">-</span> <span class="nt">cwd</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/home/ec2-user/projects/pancake</span>
+    <span class="p p-Indicator">-</span> <span class="nt">require</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">git</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pancake-code</span>
+
+<span class="hll"><span class="nt">/var/lib/pancake/pancakes.json</span><span class="p">:</span>
+</span><span class="hll">  <span class="nt">file.managed</span><span class="p">:</span>
+</span><span class="hll">    <span class="p p-Indicator">-</span> <span class="nt">source</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">salt://pancake/files/pancakes.json</span>
+</span>    <span class="p p-Indicator">-</span> <span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pancake</span>
+    <span class="p p-Indicator">-</span> <span class="nt">group</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pancake</span>
+    <span class="p p-Indicator">-</span> <span class="nt">mode</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">644</span>
+    <span class="p p-Indicator">-</span> <span class="nt">require</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">sls</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pancake.user</span>
+</pre></div>
+</td></tr></table><p>We apply the new states:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll">$ sudo salt-call --local state.sls pancake.apache
+</span>
+...
+
+Summary <span class="k">for</span> <span class="nb">local</span>
+
+Succeeded: <span class="m">9</span> <span class="o">(</span><span class="nv">changed</span><span class="o">=</span><span class="m">6</span><span class="o">)</span>
+Failed:    <span class="m">0</span>
+
+Total states run:     <span class="m">9</span>
+Total run time:  <span class="m">60</span>.001 s
+</pre></div>
+</td></tr></table><p>With all states run we can confirm the test suite.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 tests/test_pancake.py
+<span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">==========================</span>
+platform linux -- Python <span class="m">3</span>.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
+/home/user/projects/venvs/mash/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/user
+plugins: testinfra-3.2.0, cov-2.8.1
+collected <span class="m">14</span> items
+
+test_pancake_user PASSED                                      <span class="o">[</span>  <span class="m">7</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>apache2<span class="o">]</span> PASSED                         <span class="o">[</span> <span class="m">14</span>%<span class="o">]</span>
+<span class="hll">test_required_packages<span class="o">[</span>python3-Flask<span class="o">]</span> PASSED                   <span class="o">[</span> <span class="m">21</span>%<span class="o">]</span>
+</span>test_required_packages<span class="o">[</span>apache2-mod_wsgi-python3<span class="o">]</span> PASSED        <span class="o">[</span> <span class="m">28</span>%<span class="o">]</span>
+<span class="hll">test_required_packages<span class="o">[</span>git<span class="o">]</span> PASSED                             <span class="o">[</span> <span class="m">35</span>%<span class="o">]</span>
+</span>test_apache2_service PASSED                                   <span class="o">[</span> <span class="m">42</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/var/lib/pancake/wsgi.py<span class="o">]</span> PASSED     <span class="o">[</span> <span class="m">50</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/etc/apache2/vhosts.d/pancake.conf<span class="o">]</span> PASSED <span class="o">[</span> <span class="m">57</span>%<span class="o">]</span>
+<span class="hll">test_pancake_config_files<span class="o">[</span>/var/lib/pancake/pancakes.json<span class="o">]</span> PASSED <span class="o">[</span> <span class="m">64</span>%<span class="o">]</span>
+</span><span class="hll">test_pancake_repo PASSED                                      <span class="o">[</span> <span class="m">71</span>%<span class="o">]</span>
+</span>test_instance_os_name PASSED                                  <span class="o">[</span> <span class="m">78</span>%<span class="o">]</span>
+test_pancake_app_get_types FAILED                             <span class="o">[</span> <span class="m">85</span>%<span class="o">]</span>
+test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">92</span>%<span class="o">]</span>
+test_pancake_app_add_delete_type FAILED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
+
+<span class="o">=============================</span> <span class="m">3</span> failed, <span class="m">11</span> passed in <span class="m">8</span>.08s <span class="o">===================</span>
+</pre></div>
+</td></tr></table><p>All of the app tests are still failing. For now we can manually restart Apache
+and confirm the app is running.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>sudo systemctl restart apache2
+</pre></div>
+</td></tr></table><p>Re-run tests:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 tests/test_pancake.py
+<span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">==========================</span>
+platform linux -- Python <span class="m">3</span>.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
+/home/user/projects/venvs/mash/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/user
+plugins: testinfra-3.2.0, cov-2.8.1
+collected <span class="m">14</span> items
+
+test_pancake_user PASSED                                      <span class="o">[</span>  <span class="m">7</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>apache2<span class="o">]</span> PASSED                         <span class="o">[</span> <span class="m">14</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>python3-Flask<span class="o">]</span> PASSED                   <span class="o">[</span> <span class="m">21</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>apache2-mod_wsgi-python3<span class="o">]</span> PASSED        <span class="o">[</span> <span class="m">28</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>git<span class="o">]</span> PASSED                             <span class="o">[</span> <span class="m">35</span>%<span class="o">]</span>
+test_apache2_service PASSED                                   <span class="o">[</span> <span class="m">42</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/var/lib/pancake/wsgi.py<span class="o">]</span> PASSED     <span class="o">[</span> <span class="m">50</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/etc/apache2/vhosts.d/pancake.conf<span class="o">]</span> PASSED <span class="o">[</span> <span class="m">57</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/var/lib/pancake/pancakes.json<span class="o">]</span> PASSED <span class="o">[</span> <span class="m">64</span>%<span class="o">]</span>
+test_pancake_repo PASSED                                      <span class="o">[</span> <span class="m">71</span>%<span class="o">]</span>
+test_instance_os_name PASSED                                  <span class="o">[</span> <span class="m">78</span>%<span class="o">]</span>
+<span class="hll">test_pancake_app_get_types PASSED                             <span class="o">[</span> <span class="m">85</span>%<span class="o">]</span>
+</span><span class="hll">test_pancake_app_get_type PASSED                              <span class="o">[</span> <span class="m">92</span>%<span class="o">]</span>
+</span><span class="hll">test_pancake_app_add_delete_type PASSED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
+</span>
+<span class="o">=============================</span> <span class="m">14</span> passed in <span class="m">8</span>.82s <span class="o">==========================</span>
+</pre></div>
+</td></tr></table><p>The problem here is that the app states are not properly watched by the Apache
+server state. Therefore it is not notified to restart when the new vhost config
+and wsgi module are in place.</p>
+<p>Modifying the server state to watch for changes in the vhost state should
+handle an automatic restart.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="nt">apache2</span><span class="p">:</span>
+</span>  <span class="nt">pkg.latest</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">refresh</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="hll">  <span class="nt">service.running</span><span class="p">:</span>
+</span>    <span class="p p-Indicator">-</span> <span class="nt">enable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+    <span class="p p-Indicator">-</span> <span class="nt">reload</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="hll">    <span class="p p-Indicator">-</span> <span class="nt">watch</span><span class="p">:</span>
+</span>      <span class="p p-Indicator">-</span> <span class="nt">pkg</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">apache2</span>
+<span class="hll">      <span class="p p-Indicator">-</span> <span class="nt">file</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/apache2/vhosts.d/pancake.conf</span>
+</span></pre></div>
+</td></tr></table></div>
+</div>
+
+        </section>
+
+        <br><br><br>
+
+        <footer>
+          <div class="adjust-width">
+            <div id="author-block" class="w3-light-grey w3-border">
+              <div id="author-info">
+                <a href="https://smarlowucf.github.io"><img class="avatar" src="" onerror="this.src='theme/images/avatar.png'" alt="Avatar"></a>
+                <div style="margin-left: 20px;">
+                  <a href="https://smarlowucf.github.io"><span id="author-name" class="w3-hover-text-dark-grey">Sean Marlow</span></a>
+                  <p id="author-story"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <br><br><br>
+
+
+
+        </footer>
+      </div>
+    </article>
+
+
+    <footer id="footer">
+      <div id="footer-copyright" class="w3-center w3-small w3-text-grey w3-padding-48">
+        <span>
+          &copy;
+          Sean Marlow
+        </span>
+      </div>
+    </footer>
+
+
+
+  </body>
+</html>
