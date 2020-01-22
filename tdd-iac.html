@@ -95,15 +95,58 @@
           <div class="section" id="overview">
 <h2>Overview</h2>
 <p>The goal of this presentation is to provide an example of how you can test
-software defined infrastructure code with Python integration tests.</p>
+software defined infrastructure code with Python integration tests. It is
+a surprisingly easy step that can help solidify IaC and prevent bugs from
+propogating throughout a deployment.</p>
+<div class="section" id="key-takeaways">
+<h3>Key Takeaways</h3>
+<ul class="simple">
+<li>You can test infrastructure-as-code</li>
+<li>Automated testing of IaC is worthwhile</li>
+</ul>
+</div>
+<div class="section" id="terms">
+<h3>Terms</h3>
+<p>Infrastructure-as-code (IaC):</p>
+<pre class="literal-block">
+The process of provisioning infrastructure
+using tested and proven software development
+practices
+</pre>
+<p>Configuration Management:</p>
+<pre class="literal-block">
+A process for establishing and maintaining
+consistency of a product's performance, functional,
+and physical attributes with its requirements,
+design, and operational information throughout
+its life
+</pre>
+<p>Test driven development (TDD):</p>
+<pre class="literal-block">
+A software development process where requirements
+are turned into very specific test cases, then
+the software is improved so that the tests pass
+</pre>
+</div>
 <div class="section" id="tech-stack">
 <h3>Tech stack</h3>
-<ul class="simple">
-<li>Pytest with Testinfra plugin for integration tests</li>
-<li>Salt states for infrastructure configuration</li>
-<li>Example Flask app that provides pancake ingredients</li>
-<li>Terraform for automating the test suite (if time permits)</li>
-</ul>
+<p><a class="reference external" href="https://docs.saltstack.com/en/latest/">Salt</a></p>
+<pre class="literal-block">
+Is Python-based, open-source software for
+event-driven IT automation, remote task execution,
+and configuration management
+</pre>
+<p><a class="reference external" href="https://docs.pytest.org/en/latest/">Pytest</a></p>
+<pre class="literal-block">
+Is a mature full-featured Python testing tool
+</pre>
+<p><a class="reference external" href="https://testinfra.readthedocs.io/en/latest/">Testinfra</a></p>
+<pre class="literal-block">
+Is a framework for writing unit tests in Python
+to test actual state of your servers configured
+by management tools like Salt, Ansible, Puppet,
+Chef
+</pre>
 </div>
 <div class="section" id="app-requirements">
 <h3>App requirements</h3>
@@ -124,15 +167,20 @@ to pancake types and ingredients. The endpoints include:</p>
 <li>Add Type (POST): /pancakes/</li>
 <li>DELETE Type: /pancakes/fake</li>
 </ul>
-<p>The app runs in Apache2 with the mod_wsgi plugin and is Python3 based. The data
-is stored in a json file which by default is located at /user/lib/pancake/pancakes.json.</p>
+</div>
+<div class="section" id="infrastructure-info">
+<h3>Infrastructure info</h3>
+<ul class="simple">
+<li>Runs in an Apache server with mod_wsgi application server plugin.</li>
+<li>Pytest with Testinfra plugin for integration tests.</li>
+<li>Salt states for IaC.</li>
+<li>Terraform for automating the test suite (if time permits).</li>
+</ul>
 </div>
 <div class="section" id="links">
 <h3>Links</h3>
 <ul class="simple">
 <li>Example Flask app: <a class="reference external" href="https://github.com/smarlowucf/glowing-pancake">https://github.com/smarlowucf/glowing-pancake</a></li>
-<li>App config (tests &amp; states): <a class="reference external" href="https://github.com/smarlowucf/glowing-pancake-config">https://github.com/smarlowucf/glowing-pancake-config</a></li>
-<li>Presentation files: <a class="reference external" href="https://github.com/smarlowucf/presentations/tree/master/tdd_iac">https://github.com/smarlowucf/presentations/tree/master/tdd_iac</a></li>
 <li>Pytest: <a class="reference external" href="https://docs.pytest.org/en/latest/">https://docs.pytest.org/en/latest/</a></li>
 <li>Testinfra: <a class="reference external" href="https://testinfra.readthedocs.io/en/latest/">https://testinfra.readthedocs.io/en/latest/</a></li>
 <li>Salt: <a class="reference external" href="https://docs.saltstack.com/en/latest/">https://docs.saltstack.com/en/latest/</a></li>
@@ -428,8 +476,8 @@ instance in AWS.</p>
 22
 23
 24
-25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 tests/test_pancake.py
-<span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">==========================</span>
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 test_pancake.py
+<span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">====================</span>
 platform linux -- Python <span class="m">3</span>.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
@@ -452,7 +500,7 @@ test_pancake_repo FAILED                                      <span class="o">[<
 test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">92</span>%<span class="o">]</span>
 test_pancake_app_add_delete_type FAILED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
 
-<span class="hll"><span class="o">=============================</span> <span class="m">13</span> failed, <span class="m">1</span> passed in <span class="m">4</span>.62s <span class="o">===================</span>
+<span class="hll"><span class="o">=============================</span> <span class="m">13</span> failed, <span class="m">1</span> passed in <span class="m">4</span>.62s <span class="o">===============</span>
 </span></pre></div>
 </td></tr></table><p>Everything fails except the os name check. This is expected as os-release
 should already match the proper value.</p>
@@ -539,8 +587,8 @@ to confirm that the user test is now passing.</p>
 22
 23
 24
-25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 tests/test_pancake.py
-<span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">=========================</span>
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 test_pancake.py
+<span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">===================</span>
 platform linux -- Python <span class="m">3</span>.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
@@ -563,7 +611,7 @@ test_pancake_app_get_types FAILED                             <span class="o">[<
 test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">92</span>%<span class="o">]</span>
 test_pancake_app_add_delete_type FAILED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
 
-<span class="hll"><span class="o">=============================</span> <span class="m">12</span> failed, <span class="m">2</span> passed in <span class="m">6</span>.50s <span class="o">===================</span>
+<span class="hll"><span class="o">=============================</span> <span class="m">12</span> failed, <span class="m">2</span> passed in <span class="m">6</span>.50s <span class="o">==============</span>
 </span></pre></div>
 </td></tr></table></div>
 <div class="section" id="add-states-for-apache-server">
@@ -707,8 +755,8 @@ Total run time:  <span class="m">65</span>.174 s
 22
 23
 24
-25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 tests/test_pancake.py
-<span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">==========================</span>
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 test_pancake.py
+<span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">====================</span>
 platform linux -- Python <span class="m">3</span>.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
@@ -731,7 +779,7 @@ test_pancake_app_get_types FAILED                             <span class="o">[<
 test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">92</span>%<span class="o">]</span>
 test_pancake_app_add_delete_type FAILED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
 
-<span class="o">=============================</span> <span class="m">7</span> failed, <span class="m">7</span> passed in <span class="m">6</span>.81s <span class="o">=====================</span>
+<span class="o">=============================</span> <span class="m">7</span> failed, <span class="m">7</span> passed in <span class="m">6</span>.81s <span class="o">================</span>
 </pre></div>
 </td></tr></table></div>
 <div class="section" id="add-states-for-pancake-app">
@@ -874,8 +922,8 @@ Total run time:  <span class="m">60</span>.001 s
 22
 23
 24
-25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 tests/test_pancake.py
-<span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">==========================</span>
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 test_pancake.py
+<span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">====================</span>
 platform linux -- Python <span class="m">3</span>.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
@@ -898,7 +946,7 @@ test_pancake_app_get_types FAILED                             <span class="o">[<
 test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">92</span>%<span class="o">]</span>
 test_pancake_app_add_delete_type FAILED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
 
-<span class="o">=============================</span> <span class="m">3</span> failed, <span class="m">11</span> passed in <span class="m">8</span>.08s <span class="o">===================</span>
+<span class="o">=============================</span> <span class="m">3</span> failed, <span class="m">11</span> passed in <span class="m">8</span>.08s <span class="o">===============</span>
 </pre></div>
 </td></tr></table><p>All of the app tests are still failing. For now we can manually restart Apache
 and confirm the app is running.</p>
@@ -929,8 +977,8 @@ and confirm the app is running.</p>
 22
 23
 24
-25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 tests/test_pancake.py
-<span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">==========================</span>
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 test_pancake.py
+<span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">====================</span>
 platform linux -- Python <span class="m">3</span>.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
@@ -953,7 +1001,7 @@ test_instance_os_name PASSED                                  <span class="o">[<
 </span><span class="hll">test_pancake_app_get_type PASSED                              <span class="o">[</span> <span class="m">92</span>%<span class="o">]</span>
 </span><span class="hll">test_pancake_app_add_delete_type PASSED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
 </span>
-<span class="o">=============================</span> <span class="m">14</span> passed in <span class="m">8</span>.82s <span class="o">==========================</span>
+<span class="o">=============================</span> <span class="m">14</span> passed in <span class="m">8</span>.82s <span class="o">=========================</span>
 </pre></div>
 </td></tr></table><p>The problem here is that the app states are not properly watched by the Apache
 server state. Therefore it is not notified to restart when the new vhost config
@@ -978,7 +1026,26 @@ handle an automatic restart.</p>
 </span>      <span class="p p-Indicator">-</span> <span class="nt">pkg</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">apache2</span>
 <span class="hll">      <span class="p p-Indicator">-</span> <span class="nt">file</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/apache2/vhosts.d/pancake.conf</span>
 </span></pre></div>
-</td></tr></table></div>
+</td></tr></table><p>With that in place we have succesfully driven the development of Salt states
+via TDD using Pytest. As the last the example shows it's very easy for bugs
+to creep into IaC. Catching the issues early will prevent a lot of headaches
+when it comes time to production deployment.</p>
+<p>The use of a TDD methodology is helpful here as it gave us some insight into
+what the system requirements will be. This helped drive smaller more modular
+state files that can be run and tested independently. Which in turn leads to
+a more flexible and extensible infrastructure configuration.</p>
+</div>
+</div>
+<div class="section" id="next-steps">
+<h2>Next steps</h2>
+<p>With a test suite in place, and a set of Salt states to provision
+an instance, the next step would be to automate the entire testing process.
+For this app I chose to dive into Terraform which launches an instance in
+EC2. It triggers the Salt states to be applied and then runs the test suite
+to confirm the instance is provisioned properly. At the moment the teardown
+process is manual so the next area for exploration would be a tool to
+automate Terraform. That is beyond this tutorial but a package that may be
+helpful is <a class="reference external" href="https://github.com/gruntwork-io/terratest">Terratest</a>.</p>
 </div>
 
         </section>

@@ -2,15 +2,58 @@
 <feed xmlns="http://www.w3.org/2005/Atom"><title>smarlowucf</title><link href="https://smarlowucf.github.io/" rel="alternate"></link><link href="https://smarlowucf.github.io/feeds/all.atom.xml" rel="self"></link><id>https://smarlowucf.github.io/</id><updated>2020-01-13T16:34:00-06:00</updated><entry><title>Using TDD to boost your IaC strategy</title><link href="https://smarlowucf.github.io/tdd-iac.html" rel="alternate"></link><published>2020-01-13T16:34:00-06:00</published><updated>2020-01-13T16:34:00-06:00</updated><author><name>Sean Marlow</name></author><id>tag:smarlowucf.github.io,2020-01-13:/tdd-iac.html</id><summary type="html">Using TDD with Pytest to drive production of Salt states for an example Flask app.</summary><content type="html">&lt;div class="section" id="overview"&gt;
 &lt;h2&gt;Overview&lt;/h2&gt;
 &lt;p&gt;The goal of this presentation is to provide an example of how you can test
-software defined infrastructure code with Python integration tests.&lt;/p&gt;
+software defined infrastructure code with Python integration tests. It is
+a surprisingly easy step that can help solidify IaC and prevent bugs from
+propogating throughout a deployment.&lt;/p&gt;
+&lt;div class="section" id="key-takeaways"&gt;
+&lt;h3&gt;Key Takeaways&lt;/h3&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;You can test infrastructure-as-code&lt;/li&gt;
+&lt;li&gt;Automated testing of IaC is worthwhile&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="terms"&gt;
+&lt;h3&gt;Terms&lt;/h3&gt;
+&lt;p&gt;Infrastructure-as-code (IaC):&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+The process of provisioning infrastructure
+using tested and proven software development
+practices
+&lt;/pre&gt;
+&lt;p&gt;Configuration Management:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+A process for establishing and maintaining
+consistency of a product's performance, functional,
+and physical attributes with its requirements,
+design, and operational information throughout
+its life
+&lt;/pre&gt;
+&lt;p&gt;Test driven development (TDD):&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+A software development process where requirements
+are turned into very specific test cases, then
+the software is improved so that the tests pass
+&lt;/pre&gt;
+&lt;/div&gt;
 &lt;div class="section" id="tech-stack"&gt;
 &lt;h3&gt;Tech stack&lt;/h3&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;Pytest with Testinfra plugin for integration tests&lt;/li&gt;
-&lt;li&gt;Salt states for infrastructure configuration&lt;/li&gt;
-&lt;li&gt;Example Flask app that provides pancake ingredients&lt;/li&gt;
-&lt;li&gt;Terraform for automating the test suite (if time permits)&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;&lt;a class="reference external" href="https://docs.saltstack.com/en/latest/"&gt;Salt&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+Is Python-based, open-source software for
+event-driven IT automation, remote task execution,
+and configuration management
+&lt;/pre&gt;
+&lt;p&gt;&lt;a class="reference external" href="https://docs.pytest.org/en/latest/"&gt;Pytest&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+Is a mature full-featured Python testing tool
+&lt;/pre&gt;
+&lt;p&gt;&lt;a class="reference external" href="https://testinfra.readthedocs.io/en/latest/"&gt;Testinfra&lt;/a&gt;&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+Is a framework for writing unit tests in Python
+to test actual state of your servers configured
+by management tools like Salt, Ansible, Puppet,
+Chef
+&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div class="section" id="app-requirements"&gt;
 &lt;h3&gt;App requirements&lt;/h3&gt;
@@ -31,15 +74,20 @@ to pancake types and ingredients. The endpoints include:&lt;/p&gt;
 &lt;li&gt;Add Type (POST): /pancakes/&lt;/li&gt;
 &lt;li&gt;DELETE Type: /pancakes/fake&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;The app runs in Apache2 with the mod_wsgi plugin and is Python3 based. The data
-is stored in a json file which by default is located at /user/lib/pancake/pancakes.json.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="infrastructure-info"&gt;
+&lt;h3&gt;Infrastructure info&lt;/h3&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Runs in an Apache server with mod_wsgi application server plugin.&lt;/li&gt;
+&lt;li&gt;Pytest with Testinfra plugin for integration tests.&lt;/li&gt;
+&lt;li&gt;Salt states for IaC.&lt;/li&gt;
+&lt;li&gt;Terraform for automating the test suite (if time permits).&lt;/li&gt;
+&lt;/ul&gt;
 &lt;/div&gt;
 &lt;div class="section" id="links"&gt;
 &lt;h3&gt;Links&lt;/h3&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;Example Flask app: &lt;a class="reference external" href="https://github.com/smarlowucf/glowing-pancake"&gt;https://github.com/smarlowucf/glowing-pancake&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;App config (tests &amp;amp; states): &lt;a class="reference external" href="https://github.com/smarlowucf/glowing-pancake-config"&gt;https://github.com/smarlowucf/glowing-pancake-config&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Presentation files: &lt;a class="reference external" href="https://github.com/smarlowucf/presentations/tree/master/tdd_iac"&gt;https://github.com/smarlowucf/presentations/tree/master/tdd_iac&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Pytest: &lt;a class="reference external" href="https://docs.pytest.org/en/latest/"&gt;https://docs.pytest.org/en/latest/&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Testinfra: &lt;a class="reference external" href="https://testinfra.readthedocs.io/en/latest/"&gt;https://testinfra.readthedocs.io/en/latest/&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Salt: &lt;a class="reference external" href="https://docs.saltstack.com/en/latest/"&gt;https://docs.saltstack.com/en/latest/&lt;/a&gt;&lt;/li&gt;
@@ -335,8 +383,8 @@ instance in AWS.&lt;/p&gt;
 22
 23
 24
-25&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 tests/test_pancake.py
-&lt;span class="o"&gt;=================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;==========================&lt;/span&gt;
+25&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 test_pancake.py
+&lt;span class="o"&gt;=================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;====================&lt;/span&gt;
 platform linux -- Python &lt;span class="m"&gt;3&lt;/span&gt;.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
@@ -359,7 +407,7 @@ test_pancake_repo FAILED                                      &lt;span class="o"
 test_pancake_app_get_type FAILED                              &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;92&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 test_pancake_app_add_delete_type FAILED                       &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;100&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 
-&lt;span class="hll"&gt;&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;13&lt;/span&gt; failed, &lt;span class="m"&gt;1&lt;/span&gt; passed in &lt;span class="m"&gt;4&lt;/span&gt;.62s &lt;span class="o"&gt;===================&lt;/span&gt;
+&lt;span class="hll"&gt;&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;13&lt;/span&gt; failed, &lt;span class="m"&gt;1&lt;/span&gt; passed in &lt;span class="m"&gt;4&lt;/span&gt;.62s &lt;span class="o"&gt;===============&lt;/span&gt;
 &lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;Everything fails except the os name check. This is expected as os-release
 should already match the proper value.&lt;/p&gt;
@@ -446,8 +494,8 @@ to confirm that the user test is now passing.&lt;/p&gt;
 22
 23
 24
-25&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 tests/test_pancake.py
-&lt;span class="o"&gt;=================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;=========================&lt;/span&gt;
+25&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 test_pancake.py
+&lt;span class="o"&gt;=================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;===================&lt;/span&gt;
 platform linux -- Python &lt;span class="m"&gt;3&lt;/span&gt;.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
@@ -470,7 +518,7 @@ test_pancake_app_get_types FAILED                             &lt;span class="o"
 test_pancake_app_get_type FAILED                              &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;92&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 test_pancake_app_add_delete_type FAILED                       &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;100&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 
-&lt;span class="hll"&gt;&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;12&lt;/span&gt; failed, &lt;span class="m"&gt;2&lt;/span&gt; passed in &lt;span class="m"&gt;6&lt;/span&gt;.50s &lt;span class="o"&gt;===================&lt;/span&gt;
+&lt;span class="hll"&gt;&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;12&lt;/span&gt; failed, &lt;span class="m"&gt;2&lt;/span&gt; passed in &lt;span class="m"&gt;6&lt;/span&gt;.50s &lt;span class="o"&gt;==============&lt;/span&gt;
 &lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;div class="section" id="add-states-for-apache-server"&gt;
@@ -614,8 +662,8 @@ Total run time:  &lt;span class="m"&gt;65&lt;/span&gt;.174 s
 22
 23
 24
-25&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 tests/test_pancake.py
-&lt;span class="o"&gt;=================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;==========================&lt;/span&gt;
+25&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 test_pancake.py
+&lt;span class="o"&gt;=================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;====================&lt;/span&gt;
 platform linux -- Python &lt;span class="m"&gt;3&lt;/span&gt;.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
@@ -638,7 +686,7 @@ test_pancake_app_get_types FAILED                             &lt;span class="o"
 test_pancake_app_get_type FAILED                              &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;92&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 test_pancake_app_add_delete_type FAILED                       &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;100&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 
-&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;7&lt;/span&gt; failed, &lt;span class="m"&gt;7&lt;/span&gt; passed in &lt;span class="m"&gt;6&lt;/span&gt;.81s &lt;span class="o"&gt;=====================&lt;/span&gt;
+&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;7&lt;/span&gt; failed, &lt;span class="m"&gt;7&lt;/span&gt; passed in &lt;span class="m"&gt;6&lt;/span&gt;.81s &lt;span class="o"&gt;================&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;div class="section" id="add-states-for-pancake-app"&gt;
@@ -781,8 +829,8 @@ Total run time:  &lt;span class="m"&gt;60&lt;/span&gt;.001 s
 22
 23
 24
-25&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 tests/test_pancake.py
-&lt;span class="o"&gt;=================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;==========================&lt;/span&gt;
+25&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 test_pancake.py
+&lt;span class="o"&gt;=================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;====================&lt;/span&gt;
 platform linux -- Python &lt;span class="m"&gt;3&lt;/span&gt;.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
@@ -805,7 +853,7 @@ test_pancake_app_get_types FAILED                             &lt;span class="o"
 test_pancake_app_get_type FAILED                              &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;92&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 test_pancake_app_add_delete_type FAILED                       &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;100&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 
-&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;3&lt;/span&gt; failed, &lt;span class="m"&gt;11&lt;/span&gt; passed in &lt;span class="m"&gt;8&lt;/span&gt;.08s &lt;span class="o"&gt;===================&lt;/span&gt;
+&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;3&lt;/span&gt; failed, &lt;span class="m"&gt;11&lt;/span&gt; passed in &lt;span class="m"&gt;8&lt;/span&gt;.08s &lt;span class="o"&gt;===============&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;All of the app tests are still failing. For now we can manually restart Apache
 and confirm the app is running.&lt;/p&gt;
@@ -836,8 +884,8 @@ and confirm the app is running.&lt;/p&gt;
 22
 23
 24
-25&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 tests/test_pancake.py
-&lt;span class="o"&gt;=================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;==========================&lt;/span&gt;
+25&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 test_pancake.py
+&lt;span class="o"&gt;=================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;====================&lt;/span&gt;
 platform linux -- Python &lt;span class="m"&gt;3&lt;/span&gt;.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
@@ -860,7 +908,7 @@ test_instance_os_name PASSED                                  &lt;span class="o"
 &lt;/span&gt;&lt;span class="hll"&gt;test_pancake_app_get_type PASSED                              &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;92&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/span&gt;&lt;span class="hll"&gt;test_pancake_app_add_delete_type PASSED                       &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;100&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/span&gt;
-&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;14&lt;/span&gt; passed in &lt;span class="m"&gt;8&lt;/span&gt;.82s &lt;span class="o"&gt;==========================&lt;/span&gt;
+&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;14&lt;/span&gt; passed in &lt;span class="m"&gt;8&lt;/span&gt;.82s &lt;span class="o"&gt;=========================&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;The problem here is that the app states are not properly watched by the Apache
 server state. Therefore it is not notified to restart when the new vhost config
@@ -885,7 +933,26 @@ handle an automatic restart.&lt;/p&gt;
 &lt;/span&gt;      &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;pkg&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;apache2&lt;/span&gt;
 &lt;span class="hll"&gt;      &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;file&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;/etc/apache2/vhosts.d/pancake.conf&lt;/span&gt;
 &lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;With that in place we have succesfully driven the development of Salt states
+via TDD using Pytest. As the last the example shows it's very easy for bugs
+to creep into IaC. Catching the issues early will prevent a lot of headaches
+when it comes time to production deployment.&lt;/p&gt;
+&lt;p&gt;The use of a TDD methodology is helpful here as it gave us some insight into
+what the system requirements will be. This helped drive smaller more modular
+state files that can be run and tested independently. Which in turn leads to
+a more flexible and extensible infrastructure configuration.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="next-steps"&gt;
+&lt;h2&gt;Next steps&lt;/h2&gt;
+&lt;p&gt;With a test suite in place, and a set of Salt states to provision
+an instance, the next step would be to automate the entire testing process.
+For this app I chose to dive into Terraform which launches an instance in
+EC2. It triggers the Salt states to be applied and then runs the test suite
+to confirm the instance is provisioned properly. At the moment the teardown
+process is manual so the next area for exploration would be a tool to
+automate Terraform. That is beyond this tutorial but a package that may be
+helpful is &lt;a class="reference external" href="https://github.com/gruntwork-io/terratest"&gt;Terratest&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 </content><category term="Python"></category><category term="python"></category><category term="iac"></category><category term="tdd"></category><category term="testing"></category></entry><entry><title>Moonwalking With Einstein</title><link href="https://smarlowucf.github.io/moonwalking-with-einstein.html" rel="alternate"></link><published>2019-01-28T19:47:30-06:00</published><updated>2019-01-28T19:47:30-06:00</updated><author><name>Sean Marlow</name></author><id>tag:smarlowucf.github.io,2019-01-28:/moonwalking-with-einstein.html</id><summary type="html">Notes on Moonwalking With Einstein by Joshua Foer</summary><content type="html">&lt;p&gt;&lt;strong&gt;A memory is a pattern of connections between your neurons.&lt;/strong&gt;&lt;/p&gt;
 &lt;div class="section" id="memory-palace-or-method-of-loci"&gt;
