@@ -4,7 +4,7 @@
 &lt;p&gt;The goal of this presentation is to provide an example of how you can test
 software defined infrastructure code with Python integration tests. It is
 a surprisingly easy step that can help solidify IaC and prevent bugs from
-propogating throughout a deployment.&lt;/p&gt;
+propagating throughout a deployment.&lt;/p&gt;
 &lt;div class="section" id="key-takeaways"&gt;
 &lt;h3&gt;Key Takeaways&lt;/h3&gt;
 &lt;ul class="simple"&gt;
@@ -81,7 +81,7 @@ to pancake types and ingredients. The endpoints include:&lt;/p&gt;
 &lt;li&gt;Runs in an Apache server with mod_wsgi application server plugin.&lt;/li&gt;
 &lt;li&gt;Pytest with Testinfra plugin for integration tests.&lt;/li&gt;
 &lt;li&gt;Salt states for IaC.&lt;/li&gt;
-&lt;li&gt;Terraform for automating the test suite (if time permits).&lt;/li&gt;
+&lt;li&gt;Terraform for automating the test suite (out of scope).&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;div class="section" id="links"&gt;
@@ -357,7 +357,7 @@ host run module.&lt;/p&gt;
 &lt;div class="section" id="confirm-tests-fail"&gt;
 &lt;h3&gt;Confirm tests fail&lt;/h3&gt;
 &lt;p&gt;Now that the test suite is in place we can run everything to confirm all tests
-fail. The tests are are run against a newly provisioned openSUSE Leap 15.1
+fail. The tests are run against a newly provisioned openSUSE Leap 15.1
 instance in AWS.&lt;/p&gt;
 &lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
@@ -525,7 +525,7 @@ test_pancake_app_add_delete_type FAILED                       &lt;span class="o"
 &lt;h3&gt;Add states for Apache server&lt;/h3&gt;
 &lt;p&gt;There are multiple states required for the Apache server. The app requires
 two packages (apache2, apache2-mod_wsgi-python3) and the apache2 service
-to be running and enabled.&lt;/p&gt;
+should be running and enabled.&lt;/p&gt;
 &lt;p&gt;Also we have the vhost configuration file and the wsgi Python module which
 mod_wsgi will be using to run the Flask app.&lt;/p&gt;
 &lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
@@ -792,7 +792,7 @@ the pancake json database file is copied to the pancake user home directory.&lt;
  8
  9
 10
-11&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="hll"&gt;$ sudo salt-call --local state.sls pancake.apache
+11&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="hll"&gt;$ sudo salt-call --local state.sls pancake.init
 &lt;/span&gt;
 ...
 
@@ -936,10 +936,10 @@ handle an automatic restart.&lt;/p&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;With that in place we have succesfully driven the development of Salt states
 via TDD using Pytest. As the last the example shows it's very easy for bugs
 to creep into IaC. Catching the issues early will prevent a lot of headaches
-when it comes time to production deployment.&lt;/p&gt;
+when it comes time for production deployment.&lt;/p&gt;
 &lt;p&gt;The use of a TDD methodology is helpful here as it gave us some insight into
 what the system requirements will be. This helped drive smaller more modular
-state files that can be run and tested independently. Which in turn leads to
+state files that can be run and tested independently. This in turn leads to
 a more flexible and extensible infrastructure configuration.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -948,7 +948,7 @@ a more flexible and extensible infrastructure configuration.&lt;/p&gt;
 &lt;p&gt;With a test suite in place, and a set of Salt states to provision
 an instance, the next step would be to automate the entire testing process.
 For this app I chose to dive into Terraform which launches an instance in
-EC2. It triggers the Salt states to be applied and then runs the test suite
+EC2. It triggers the Salt states and then runs the test suite
 to confirm the instance is provisioned properly. At the moment the teardown
 process is manual so the next area for exploration would be a tool to
 automate Terraform. That is beyond this tutorial but a package that may be
