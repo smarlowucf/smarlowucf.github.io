@@ -224,15 +224,17 @@ all packages are installed.</p>
  7
  8
  9
-10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
 
 <span class="hll"><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="p">[</span>
 </span><span class="hll">    <span class="p">(</span><span class="s1">&#39;apache2&#39;</span><span class="p">),</span>
+</span><span class="hll">    <span class="p">(</span><span class="s1">&#39;python3&#39;</span><span class="p">),</span>
 </span><span class="hll">    <span class="p">(</span><span class="s1">&#39;python3-Flask&#39;</span><span class="p">),</span>
 </span><span class="hll">    <span class="p">(</span><span class="s1">&#39;apache2-mod_wsgi-python3&#39;</span><span class="p">),</span>
 </span><span class="hll">    <span class="p">(</span><span class="s1">&#39;git&#39;</span><span class="p">)</span>
-</span><span class="hll"><span class="p">])</span>
-</span><span class="k">def</span> <span class="nf">test_required_packages</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">test_required_packages</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
     <span class="k">assert</span> <span class="n">host</span><span class="o">.</span><span class="n">package</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">is_installed</span>
 </pre></div>
 </td></tr></table></div>
@@ -476,32 +478,34 @@ instance in AWS.</p>
 22
 23
 24
-25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 test_pancake.py
+25
+26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 test_pancake.py
 <span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">====================</span>
 platform linux -- Python <span class="m">3</span>.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
 rootdir: /home/user
 plugins: testinfra-3.2.0, cov-2.8.1
-collected <span class="m">14</span> items
+collected <span class="m">15</span> items
 
-test_pancake_user FAILED                                      <span class="o">[</span>  <span class="m">7</span>%<span class="o">]</span>
-test_required_packages<span class="o">[</span>apache2<span class="o">]</span> FAILED                         <span class="o">[</span> <span class="m">14</span>%<span class="o">]</span>
-test_required_packages<span class="o">[</span>python3-Flask<span class="o">]</span> FAILED                   <span class="o">[</span> <span class="m">21</span>%<span class="o">]</span>
-test_required_packages<span class="o">[</span>apache2-mod_wsgi-python3<span class="o">]</span> FAILED        <span class="o">[</span> <span class="m">28</span>%<span class="o">]</span>
-test_required_packages<span class="o">[</span>git<span class="o">]</span> FAILED                             <span class="o">[</span> <span class="m">35</span>%<span class="o">]</span>
-test_apache2_service FAILED                                   <span class="o">[</span> <span class="m">42</span>%<span class="o">]</span>
-test_pancake_config_files<span class="o">[</span>/var/lib/pancake/wsgi.py<span class="o">]</span> FAILED     <span class="o">[</span> <span class="m">50</span>%<span class="o">]</span>
-test_pancake_config_files<span class="o">[</span>/etc/apache2/vhosts.d/pancake.conf<span class="o">]</span> FAILED <span class="o">[</span> <span class="m">57</span>%<span class="o">]</span>
-test_pancake_config_files<span class="o">[</span>/var/lib/pancake/pancakes.json<span class="o">]</span> FAILED <span class="o">[</span> <span class="m">64</span>%<span class="o">]</span>
-test_pancake_repo FAILED                                      <span class="o">[</span> <span class="m">71</span>%<span class="o">]</span>
-<span class="hll">test_instance_os_name PASSED                                  <span class="o">[</span> <span class="m">78</span>%<span class="o">]</span>
-</span>test_pancake_app_get_types FAILED                             <span class="o">[</span> <span class="m">85</span>%<span class="o">]</span>
-test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">92</span>%<span class="o">]</span>
+test_pancake_user FAILED                                      <span class="o">[</span>  <span class="m">6</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>apache2<span class="o">]</span> FAILED                         <span class="o">[</span> <span class="m">13</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>python3<span class="o">]</span> PASSED                         <span class="o">[</span> <span class="m">20</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>python3-Flask<span class="o">]</span> FAILED                   <span class="o">[</span> <span class="m">26</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>apache2-mod_wsgi-python3<span class="o">]</span> FAILED        <span class="o">[</span> <span class="m">33</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>git<span class="o">]</span> FAILED                             <span class="o">[</span> <span class="m">40</span>%<span class="o">]</span>
+test_apache2_service FAILED                                   <span class="o">[</span> <span class="m">46</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/var/lib/pancake/wsgi.py<span class="o">]</span> FAILED     <span class="o">[</span> <span class="m">53</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/etc/apache2/vhosts.d/pancake.conf<span class="o">]</span> FAILED <span class="o">[</span> <span class="m">60</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/var/lib/pancake/pancakes.json<span class="o">]</span> FAILED <span class="o">[</span> <span class="m">66</span>%<span class="o">]</span>
+<span class="hll">test_pancake_repo FAILED                                      <span class="o">[</span> <span class="m">73</span>%<span class="o">]</span>
+</span>test_instance_os_name PASSED                                  <span class="o">[</span> <span class="m">80</span>%<span class="o">]</span>
+test_pancake_app_get_types FAILED                             <span class="o">[</span> <span class="m">86</span>%<span class="o">]</span>
+test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">93</span>%<span class="o">]</span>
 test_pancake_app_add_delete_type FAILED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
-
-<span class="hll"><span class="o">=============================</span> <span class="m">13</span> failed, <span class="m">1</span> passed in <span class="m">4</span>.62s <span class="o">===============</span>
-</span></pre></div>
+<span class="hll">
+</span><span class="o">=============================</span> <span class="m">13</span> failed, <span class="m">2</span> passed in <span class="m">4</span>.62s <span class="o">===============</span>
+</pre></div>
 </td></tr></table><p>Everything fails except the os name check. This is expected as os-release
 should already match the proper value.</p>
 </div>
@@ -587,32 +591,34 @@ to confirm that the user test is now passing.</p>
 22
 23
 24
-25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 test_pancake.py
+25
+26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 test_pancake.py
 <span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">===================</span>
 platform linux -- Python <span class="m">3</span>.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
 rootdir: /home/user
 plugins: testinfra-3.2.0, cov-2.8.1
-collected <span class="m">14</span> items
+collected <span class="m">15</span> items
 
-<span class="hll">test_pancake_user PASSED                                      <span class="o">[</span>  <span class="m">7</span>%<span class="o">]</span>
-</span>test_required_packages<span class="o">[</span>apache2<span class="o">]</span> FAILED                         <span class="o">[</span> <span class="m">14</span>%<span class="o">]</span>
-test_required_packages<span class="o">[</span>python3-Flask<span class="o">]</span> FAILED                   <span class="o">[</span> <span class="m">21</span>%<span class="o">]</span>
-test_required_packages<span class="o">[</span>apache2-mod_wsgi-python3<span class="o">]</span> FAILED        <span class="o">[</span> <span class="m">28</span>%<span class="o">]</span>
-test_required_packages<span class="o">[</span>git<span class="o">]</span> FAILED                             <span class="o">[</span> <span class="m">35</span>%<span class="o">]</span>
-test_apache2_service FAILED                                   <span class="o">[</span> <span class="m">42</span>%<span class="o">]</span>
-test_pancake_config_files<span class="o">[</span>/var/lib/pancake/wsgi.py<span class="o">]</span> FAILED     <span class="o">[</span> <span class="m">50</span>%<span class="o">]</span>
-test_pancake_config_files<span class="o">[</span>/etc/apache2/vhosts.d/pancake.conf<span class="o">]</span> FAILED <span class="o">[</span> <span class="m">57</span>%<span class="o">]</span>
-test_pancake_config_files<span class="o">[</span>/var/lib/pancake/pancakes.json<span class="o">]</span> FAILED <span class="o">[</span> <span class="m">64</span>%<span class="o">]</span>
-test_pancake_repo FAILED                                      <span class="o">[</span> <span class="m">71</span>%<span class="o">]</span>
-test_instance_os_name PASSED                                  <span class="o">[</span> <span class="m">78</span>%<span class="o">]</span>
-test_pancake_app_get_types FAILED                             <span class="o">[</span> <span class="m">85</span>%<span class="o">]</span>
-test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">92</span>%<span class="o">]</span>
+<span class="hll">test_pancake_user PASSED                                      <span class="o">[</span>  <span class="m">6</span>%<span class="o">]</span>
+</span>test_required_packages<span class="o">[</span>apache2<span class="o">]</span> FAILED                         <span class="o">[</span> <span class="m">13</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>python3<span class="o">]</span> PASSED                         <span class="o">[</span> <span class="m">20</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>python3-Flask<span class="o">]</span> FAILED                   <span class="o">[</span> <span class="m">26</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>apache2-mod_wsgi-python3<span class="o">]</span> FAILED        <span class="o">[</span> <span class="m">33</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>git<span class="o">]</span> FAILED                             <span class="o">[</span> <span class="m">40</span>%<span class="o">]</span>
+test_apache2_service FAILED                                   <span class="o">[</span> <span class="m">46</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/var/lib/pancake/wsgi.py<span class="o">]</span> FAILED     <span class="o">[</span> <span class="m">53</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/etc/apache2/vhosts.d/pancake.conf<span class="o">]</span> FAILED <span class="o">[</span> <span class="m">60</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/var/lib/pancake/pancakes.json<span class="o">]</span> FAILED <span class="o">[</span> <span class="m">66</span>%<span class="o">]</span>
+test_pancake_repo FAILED                                      <span class="o">[</span> <span class="m">73</span>%<span class="o">]</span>
+test_instance_os_name PASSED                                  <span class="o">[</span> <span class="m">80</span>%<span class="o">]</span>
+test_pancake_app_get_types FAILED                             <span class="o">[</span> <span class="m">86</span>%<span class="o">]</span>
+test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">93</span>%<span class="o">]</span>
 test_pancake_app_add_delete_type FAILED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
-
-<span class="hll"><span class="o">=============================</span> <span class="m">12</span> failed, <span class="m">2</span> passed in <span class="m">6</span>.50s <span class="o">==============</span>
-</span></pre></div>
+<span class="hll">
+</span><span class="o">=============================</span> <span class="m">12</span> failed, <span class="m">3</span> passed in <span class="m">6</span>.50s <span class="o">==============</span>
+</pre></div>
 </td></tr></table></div>
 <div class="section" id="add-states-for-apache-server">
 <h3>Add states for Apache server</h3>
@@ -755,31 +761,33 @@ Total run time:  <span class="m">65</span>.174 s
 22
 23
 24
-25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 test_pancake.py
+25
+26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 test_pancake.py
 <span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">====================</span>
 platform linux -- Python <span class="m">3</span>.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
 rootdir: /home/user
 plugins: testinfra-3.2.0, cov-2.8.1
-collected <span class="m">14</span> items
+collected <span class="m">15</span> items
 
-test_pancake_user PASSED                                      <span class="o">[</span>  <span class="m">7</span>%<span class="o">]</span>
-<span class="hll">test_required_packages<span class="o">[</span>apache2<span class="o">]</span> PASSED                         <span class="o">[</span> <span class="m">14</span>%<span class="o">]</span>
-</span>test_required_packages<span class="o">[</span>python3-Flask<span class="o">]</span> FAILED                   <span class="o">[</span> <span class="m">21</span>%<span class="o">]</span>
-<span class="hll">test_required_packages<span class="o">[</span>apache2-mod_wsgi-python3<span class="o">]</span> PASSED        <span class="o">[</span> <span class="m">28</span>%<span class="o">]</span>
-</span>test_required_packages<span class="o">[</span>git<span class="o">]</span> FAILED                             <span class="o">[</span> <span class="m">35</span>%<span class="o">]</span>
-<span class="hll">test_apache2_service PASSED                                   <span class="o">[</span> <span class="m">42</span>%<span class="o">]</span>
-</span><span class="hll">test_pancake_config_files<span class="o">[</span>/var/lib/pancake/wsgi.py<span class="o">]</span> PASSED     <span class="o">[</span> <span class="m">50</span>%<span class="o">]</span>
-</span><span class="hll">test_pancake_config_files<span class="o">[</span>/etc/apache2/vhosts.d/pancake.conf<span class="o">]</span> PASSED <span class="o">[</span> <span class="m">57</span>%<span class="o">]</span>
-</span>test_pancake_config_files<span class="o">[</span>/var/lib/pancake/pancakes.json<span class="o">]</span> FAILED <span class="o">[</span> <span class="m">64</span>%<span class="o">]</span>
-test_pancake_repo FAILED                                      <span class="o">[</span> <span class="m">71</span>%<span class="o">]</span>
-test_instance_os_name PASSED                                  <span class="o">[</span> <span class="m">78</span>%<span class="o">]</span>
-test_pancake_app_get_types FAILED                             <span class="o">[</span> <span class="m">85</span>%<span class="o">]</span>
-test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">92</span>%<span class="o">]</span>
+test_pancake_user PASSED                                      <span class="o">[</span>  <span class="m">6</span>%<span class="o">]</span>
+<span class="hll">test_required_packages<span class="o">[</span>apache2<span class="o">]</span> PASSED                         <span class="o">[</span> <span class="m">13</span>%<span class="o">]</span>
+</span>test_required_packages<span class="o">[</span>python3<span class="o">]</span> PASSED                         <span class="o">[</span> <span class="m">20</span>%<span class="o">]</span>
+<span class="hll">test_required_packages<span class="o">[</span>python3-Flask<span class="o">]</span> FAILED                   <span class="o">[</span> <span class="m">26</span>%<span class="o">]</span>
+</span>test_required_packages<span class="o">[</span>apache2-mod_wsgi-python3<span class="o">]</span> PASSED        <span class="o">[</span> <span class="m">33</span>%<span class="o">]</span>
+<span class="hll">test_required_packages<span class="o">[</span>git<span class="o">]</span> FAILED                             <span class="o">[</span> <span class="m">40</span>%<span class="o">]</span>
+</span><span class="hll">test_apache2_service PASSED                                   <span class="o">[</span> <span class="m">46</span>%<span class="o">]</span>
+</span><span class="hll">test_pancake_config_files<span class="o">[</span>/var/lib/pancake/wsgi.py<span class="o">]</span> PASSED     <span class="o">[</span> <span class="m">53</span>%<span class="o">]</span>
+</span>test_pancake_config_files<span class="o">[</span>/etc/apache2/vhosts.d/pancake.conf<span class="o">]</span> PASSED <span class="o">[</span> <span class="m">60</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/var/lib/pancake/pancakes.json<span class="o">]</span> FAILED <span class="o">[</span> <span class="m">66</span>%<span class="o">]</span>
+test_pancake_repo FAILED                                      <span class="o">[</span> <span class="m">73</span>%<span class="o">]</span>
+test_instance_os_name PASSED                                  <span class="o">[</span> <span class="m">80</span>%<span class="o">]</span>
+test_pancake_app_get_types FAILED                             <span class="o">[</span> <span class="m">86</span>%<span class="o">]</span>
+test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">93</span>%<span class="o">]</span>
 test_pancake_app_add_delete_type FAILED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
 
-<span class="o">=============================</span> <span class="m">7</span> failed, <span class="m">7</span> passed in <span class="m">6</span>.81s <span class="o">================</span>
+<span class="o">=============================</span> <span class="m">7</span> failed, <span class="m">8</span> passed in <span class="m">6</span>.81s <span class="o">================</span>
 </pre></div>
 </td></tr></table></div>
 <div class="section" id="add-states-for-pancake-app">
@@ -922,31 +930,33 @@ Total run time:  <span class="m">60</span>.001 s
 22
 23
 24
-25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 test_pancake.py
+25
+26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 test_pancake.py
 <span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">====================</span>
 platform linux -- Python <span class="m">3</span>.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
 rootdir: /home/user
 plugins: testinfra-3.2.0, cov-2.8.1
-collected <span class="m">14</span> items
+collected <span class="m">15</span> items
 
-test_pancake_user PASSED                                      <span class="o">[</span>  <span class="m">7</span>%<span class="o">]</span>
-test_required_packages<span class="o">[</span>apache2<span class="o">]</span> PASSED                         <span class="o">[</span> <span class="m">14</span>%<span class="o">]</span>
-<span class="hll">test_required_packages<span class="o">[</span>python3-Flask<span class="o">]</span> PASSED                   <span class="o">[</span> <span class="m">21</span>%<span class="o">]</span>
-</span>test_required_packages<span class="o">[</span>apache2-mod_wsgi-python3<span class="o">]</span> PASSED        <span class="o">[</span> <span class="m">28</span>%<span class="o">]</span>
-<span class="hll">test_required_packages<span class="o">[</span>git<span class="o">]</span> PASSED                             <span class="o">[</span> <span class="m">35</span>%<span class="o">]</span>
-</span>test_apache2_service PASSED                                   <span class="o">[</span> <span class="m">42</span>%<span class="o">]</span>
-test_pancake_config_files<span class="o">[</span>/var/lib/pancake/wsgi.py<span class="o">]</span> PASSED     <span class="o">[</span> <span class="m">50</span>%<span class="o">]</span>
-test_pancake_config_files<span class="o">[</span>/etc/apache2/vhosts.d/pancake.conf<span class="o">]</span> PASSED <span class="o">[</span> <span class="m">57</span>%<span class="o">]</span>
-<span class="hll">test_pancake_config_files<span class="o">[</span>/var/lib/pancake/pancakes.json<span class="o">]</span> PASSED <span class="o">[</span> <span class="m">64</span>%<span class="o">]</span>
-</span><span class="hll">test_pancake_repo PASSED                                      <span class="o">[</span> <span class="m">71</span>%<span class="o">]</span>
-</span>test_instance_os_name PASSED                                  <span class="o">[</span> <span class="m">78</span>%<span class="o">]</span>
-test_pancake_app_get_types FAILED                             <span class="o">[</span> <span class="m">85</span>%<span class="o">]</span>
-test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">92</span>%<span class="o">]</span>
+test_pancake_user PASSED                                      <span class="o">[</span>  <span class="m">6</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>apache2<span class="o">]</span> PASSED                         <span class="o">[</span> <span class="m">13</span>%<span class="o">]</span>
+<span class="hll">test_required_packages<span class="o">[</span>python3<span class="o">]</span> PASSED                         <span class="o">[</span> <span class="m">20</span>%<span class="o">]</span>
+</span>test_required_packages<span class="o">[</span>python3-Flask<span class="o">]</span> PASSED                   <span class="o">[</span> <span class="m">26</span>%<span class="o">]</span>
+<span class="hll">test_required_packages<span class="o">[</span>apache2-mod_wsgi-python3<span class="o">]</span> PASSED        <span class="o">[</span> <span class="m">33</span>%<span class="o">]</span>
+</span>test_required_packages<span class="o">[</span>git<span class="o">]</span> PASSED                             <span class="o">[</span> <span class="m">40</span>%<span class="o">]</span>
+test_apache2_service PASSED                                   <span class="o">[</span> <span class="m">46</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/var/lib/pancake/wsgi.py<span class="o">]</span> PASSED     <span class="o">[</span> <span class="m">54</span>%<span class="o">]</span>
+<span class="hll">test_pancake_config_files<span class="o">[</span>/etc/apache2/vhosts.d/pancake.conf<span class="o">]</span> PASSED <span class="o">[</span> <span class="m">60</span>%<span class="o">]</span>
+</span><span class="hll">test_pancake_config_files<span class="o">[</span>/var/lib/pancake/pancakes.json<span class="o">]</span> PASSED <span class="o">[</span> <span class="m">66</span>%<span class="o">]</span>
+</span>test_pancake_repo PASSED                                      <span class="o">[</span> <span class="m">73</span>%<span class="o">]</span>
+test_instance_os_name PASSED                                  <span class="o">[</span> <span class="m">80</span>%<span class="o">]</span>
+test_pancake_app_get_types FAILED                             <span class="o">[</span> <span class="m">86</span>%<span class="o">]</span>
+test_pancake_app_get_type FAILED                              <span class="o">[</span> <span class="m">93</span>%<span class="o">]</span>
 test_pancake_app_add_delete_type FAILED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
 
-<span class="o">=============================</span> <span class="m">3</span> failed, <span class="m">11</span> passed in <span class="m">8</span>.08s <span class="o">===============</span>
+<span class="o">=============================</span> <span class="m">3</span> failed, <span class="m">12</span> passed in <span class="m">8</span>.08s <span class="o">===============</span>
 </pre></div>
 </td></tr></table><p>All of the app tests are still failing. For now we can manually restart Apache
 and confirm the app is running.</p>
@@ -977,31 +987,33 @@ and confirm the app is running.</p>
 22
 23
 24
-25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 test_pancake.py
+25
+26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="m">16</span>:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts <span class="m">0</span>.0.0.0 test_pancake.py
 <span class="o">=================================</span> <span class="nb">test</span> session <span class="nv">starts</span> <span class="o">====================</span>
 platform linux -- Python <span class="m">3</span>.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
 rootdir: /home/user
 plugins: testinfra-3.2.0, cov-2.8.1
-collected <span class="m">14</span> items
+collected <span class="m">15</span> items
 
-test_pancake_user PASSED                                      <span class="o">[</span>  <span class="m">7</span>%<span class="o">]</span>
-test_required_packages<span class="o">[</span>apache2<span class="o">]</span> PASSED                         <span class="o">[</span> <span class="m">14</span>%<span class="o">]</span>
-test_required_packages<span class="o">[</span>python3-Flask<span class="o">]</span> PASSED                   <span class="o">[</span> <span class="m">21</span>%<span class="o">]</span>
-test_required_packages<span class="o">[</span>apache2-mod_wsgi-python3<span class="o">]</span> PASSED        <span class="o">[</span> <span class="m">28</span>%<span class="o">]</span>
-test_required_packages<span class="o">[</span>git<span class="o">]</span> PASSED                             <span class="o">[</span> <span class="m">35</span>%<span class="o">]</span>
-test_apache2_service PASSED                                   <span class="o">[</span> <span class="m">42</span>%<span class="o">]</span>
-test_pancake_config_files<span class="o">[</span>/var/lib/pancake/wsgi.py<span class="o">]</span> PASSED     <span class="o">[</span> <span class="m">50</span>%<span class="o">]</span>
-test_pancake_config_files<span class="o">[</span>/etc/apache2/vhosts.d/pancake.conf<span class="o">]</span> PASSED <span class="o">[</span> <span class="m">57</span>%<span class="o">]</span>
-test_pancake_config_files<span class="o">[</span>/var/lib/pancake/pancakes.json<span class="o">]</span> PASSED <span class="o">[</span> <span class="m">64</span>%<span class="o">]</span>
-test_pancake_repo PASSED                                      <span class="o">[</span> <span class="m">71</span>%<span class="o">]</span>
-test_instance_os_name PASSED                                  <span class="o">[</span> <span class="m">78</span>%<span class="o">]</span>
-<span class="hll">test_pancake_app_get_types PASSED                             <span class="o">[</span> <span class="m">85</span>%<span class="o">]</span>
-</span><span class="hll">test_pancake_app_get_type PASSED                              <span class="o">[</span> <span class="m">92</span>%<span class="o">]</span>
-</span><span class="hll">test_pancake_app_add_delete_type PASSED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
-</span>
-<span class="o">=============================</span> <span class="m">14</span> passed in <span class="m">8</span>.82s <span class="o">=========================</span>
+test_pancake_user PASSED                                      <span class="o">[</span>  <span class="m">6</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>apache2<span class="o">]</span> PASSED                         <span class="o">[</span> <span class="m">13</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>python3<span class="o">]</span> PASSED                         <span class="o">[</span> <span class="m">20</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>python3-Flask<span class="o">]</span> PASSED                   <span class="o">[</span> <span class="m">26</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>apache2-mod_wsgi-python3<span class="o">]</span> PASSED        <span class="o">[</span> <span class="m">33</span>%<span class="o">]</span>
+test_required_packages<span class="o">[</span>git<span class="o">]</span> PASSED                             <span class="o">[</span> <span class="m">40</span>%<span class="o">]</span>
+test_apache2_service PASSED                                   <span class="o">[</span> <span class="m">46</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/var/lib/pancake/wsgi.py<span class="o">]</span> PASSED     <span class="o">[</span> <span class="m">53</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/etc/apache2/vhosts.d/pancake.conf<span class="o">]</span> PASSED <span class="o">[</span> <span class="m">60</span>%<span class="o">]</span>
+test_pancake_config_files<span class="o">[</span>/var/lib/pancake/pancakes.json<span class="o">]</span> PASSED <span class="o">[</span> <span class="m">66</span>%<span class="o">]</span>
+test_pancake_repo PASSED                                      <span class="o">[</span> <span class="m">73</span>%<span class="o">]</span>
+<span class="hll">test_instance_os_name PASSED                                  <span class="o">[</span> <span class="m">80</span>%<span class="o">]</span>
+</span><span class="hll">test_pancake_app_get_types PASSED                             <span class="o">[</span> <span class="m">86</span>%<span class="o">]</span>
+</span><span class="hll">test_pancake_app_get_type PASSED                              <span class="o">[</span> <span class="m">93</span>%<span class="o">]</span>
+</span>test_pancake_app_add_delete_type PASSED                       <span class="o">[</span><span class="m">100</span>%<span class="o">]</span>
+
+<span class="o">=============================</span> <span class="m">15</span> passed in <span class="m">8</span>.82s <span class="o">=========================</span>
 </pre></div>
 </td></tr></table><p>The problem here is that the app states are not properly watched by the Apache
 server state. Therefore it is not notified to restart when the new vhost config

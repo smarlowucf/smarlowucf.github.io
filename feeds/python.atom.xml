@@ -131,15 +131,17 @@ all packages are installed.&lt;/p&gt;
  7
  8
  9
-10&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pytest&lt;/span&gt;
+10
+11&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pytest&lt;/span&gt;
 
 &lt;span class="hll"&gt;&lt;span class="nd"&gt;@pytest&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mark&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;parametrize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
 &lt;/span&gt;&lt;span class="hll"&gt;    &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;apache2&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;    &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;python3&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
 &lt;/span&gt;&lt;span class="hll"&gt;    &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;python3-Flask&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
 &lt;/span&gt;&lt;span class="hll"&gt;    &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;apache2-mod_wsgi-python3&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
 &lt;/span&gt;&lt;span class="hll"&gt;    &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;git&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;span class="hll"&gt;&lt;span class="p"&gt;])&lt;/span&gt;
-&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_required_packages&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_required_packages&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;package&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;is_installed&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
@@ -383,32 +385,34 @@ instance in AWS.&lt;/p&gt;
 22
 23
 24
-25&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 test_pancake.py
+25
+26&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 test_pancake.py
 &lt;span class="o"&gt;=================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;====================&lt;/span&gt;
 platform linux -- Python &lt;span class="m"&gt;3&lt;/span&gt;.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
 rootdir: /home/user
 plugins: testinfra-3.2.0, cov-2.8.1
-collected &lt;span class="m"&gt;14&lt;/span&gt; items
+collected &lt;span class="m"&gt;15&lt;/span&gt; items
 
-test_pancake_user FAILED                                      &lt;span class="o"&gt;[&lt;/span&gt;  &lt;span class="m"&gt;7&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2&lt;span class="o"&gt;]&lt;/span&gt; FAILED                         &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;14&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;python3-Flask&lt;span class="o"&gt;]&lt;/span&gt; FAILED                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2-mod_wsgi-python3&lt;span class="o"&gt;]&lt;/span&gt; FAILED        &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;28&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;git&lt;span class="o"&gt;]&lt;/span&gt; FAILED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;35&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_apache2_service FAILED                                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;42&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/wsgi.py&lt;span class="o"&gt;]&lt;/span&gt; FAILED     &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;50&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/etc/apache2/vhosts.d/pancake.conf&lt;span class="o"&gt;]&lt;/span&gt; FAILED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;57&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/pancakes.json&lt;span class="o"&gt;]&lt;/span&gt; FAILED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;64&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_repo FAILED                                      &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;71&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;span class="hll"&gt;test_instance_os_name PASSED                                  &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;78&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/span&gt;test_pancake_app_get_types FAILED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;85&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_app_get_type FAILED                              &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;92&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_user FAILED                                      &lt;span class="o"&gt;[&lt;/span&gt;  &lt;span class="m"&gt;6&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2&lt;span class="o"&gt;]&lt;/span&gt; FAILED                         &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;13&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;python3&lt;span class="o"&gt;]&lt;/span&gt; PASSED                         &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;20&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;python3-Flask&lt;span class="o"&gt;]&lt;/span&gt; FAILED                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;26&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2-mod_wsgi-python3&lt;span class="o"&gt;]&lt;/span&gt; FAILED        &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;33&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;git&lt;span class="o"&gt;]&lt;/span&gt; FAILED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;40&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_apache2_service FAILED                                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;46&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/wsgi.py&lt;span class="o"&gt;]&lt;/span&gt; FAILED     &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;53&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/etc/apache2/vhosts.d/pancake.conf&lt;span class="o"&gt;]&lt;/span&gt; FAILED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;60&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/pancakes.json&lt;span class="o"&gt;]&lt;/span&gt; FAILED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;66&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="hll"&gt;test_pancake_repo FAILED                                      &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;73&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;test_instance_os_name PASSED                                  &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;80&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_app_get_types FAILED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;86&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_app_get_type FAILED                              &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;93&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 test_pancake_app_add_delete_type FAILED                       &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;100&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-
-&lt;span class="hll"&gt;&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;13&lt;/span&gt; failed, &lt;span class="m"&gt;1&lt;/span&gt; passed in &lt;span class="m"&gt;4&lt;/span&gt;.62s &lt;span class="o"&gt;===============&lt;/span&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class="hll"&gt;
+&lt;/span&gt;&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;13&lt;/span&gt; failed, &lt;span class="m"&gt;2&lt;/span&gt; passed in &lt;span class="m"&gt;4&lt;/span&gt;.62s &lt;span class="o"&gt;===============&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;Everything fails except the os name check. This is expected as os-release
 should already match the proper value.&lt;/p&gt;
 &lt;/div&gt;
@@ -494,32 +498,34 @@ to confirm that the user test is now passing.&lt;/p&gt;
 22
 23
 24
-25&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 test_pancake.py
+25
+26&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 test_pancake.py
 &lt;span class="o"&gt;=================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;===================&lt;/span&gt;
 platform linux -- Python &lt;span class="m"&gt;3&lt;/span&gt;.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
 rootdir: /home/user
 plugins: testinfra-3.2.0, cov-2.8.1
-collected &lt;span class="m"&gt;14&lt;/span&gt; items
+collected &lt;span class="m"&gt;15&lt;/span&gt; items
 
-&lt;span class="hll"&gt;test_pancake_user PASSED                                      &lt;span class="o"&gt;[&lt;/span&gt;  &lt;span class="m"&gt;7&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/span&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2&lt;span class="o"&gt;]&lt;/span&gt; FAILED                         &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;14&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;python3-Flask&lt;span class="o"&gt;]&lt;/span&gt; FAILED                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2-mod_wsgi-python3&lt;span class="o"&gt;]&lt;/span&gt; FAILED        &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;28&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;git&lt;span class="o"&gt;]&lt;/span&gt; FAILED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;35&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_apache2_service FAILED                                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;42&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/wsgi.py&lt;span class="o"&gt;]&lt;/span&gt; FAILED     &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;50&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/etc/apache2/vhosts.d/pancake.conf&lt;span class="o"&gt;]&lt;/span&gt; FAILED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;57&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/pancakes.json&lt;span class="o"&gt;]&lt;/span&gt; FAILED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;64&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_repo FAILED                                      &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;71&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_instance_os_name PASSED                                  &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;78&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_app_get_types FAILED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;85&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_app_get_type FAILED                              &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;92&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="hll"&gt;test_pancake_user PASSED                                      &lt;span class="o"&gt;[&lt;/span&gt;  &lt;span class="m"&gt;6&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2&lt;span class="o"&gt;]&lt;/span&gt; FAILED                         &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;13&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;python3&lt;span class="o"&gt;]&lt;/span&gt; PASSED                         &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;20&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;python3-Flask&lt;span class="o"&gt;]&lt;/span&gt; FAILED                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;26&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2-mod_wsgi-python3&lt;span class="o"&gt;]&lt;/span&gt; FAILED        &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;33&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;git&lt;span class="o"&gt;]&lt;/span&gt; FAILED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;40&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_apache2_service FAILED                                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;46&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/wsgi.py&lt;span class="o"&gt;]&lt;/span&gt; FAILED     &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;53&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/etc/apache2/vhosts.d/pancake.conf&lt;span class="o"&gt;]&lt;/span&gt; FAILED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;60&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/pancakes.json&lt;span class="o"&gt;]&lt;/span&gt; FAILED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;66&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_repo FAILED                                      &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;73&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_instance_os_name PASSED                                  &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;80&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_app_get_types FAILED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;86&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_app_get_type FAILED                              &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;93&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 test_pancake_app_add_delete_type FAILED                       &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;100&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-
-&lt;span class="hll"&gt;&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;12&lt;/span&gt; failed, &lt;span class="m"&gt;2&lt;/span&gt; passed in &lt;span class="m"&gt;6&lt;/span&gt;.50s &lt;span class="o"&gt;==============&lt;/span&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class="hll"&gt;
+&lt;/span&gt;&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;12&lt;/span&gt; failed, &lt;span class="m"&gt;3&lt;/span&gt; passed in &lt;span class="m"&gt;6&lt;/span&gt;.50s &lt;span class="o"&gt;==============&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;div class="section" id="add-states-for-apache-server"&gt;
 &lt;h3&gt;Add states for Apache server&lt;/h3&gt;
@@ -662,31 +668,33 @@ Total run time:  &lt;span class="m"&gt;65&lt;/span&gt;.174 s
 22
 23
 24
-25&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 test_pancake.py
+25
+26&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 test_pancake.py
 &lt;span class="o"&gt;=================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;====================&lt;/span&gt;
 platform linux -- Python &lt;span class="m"&gt;3&lt;/span&gt;.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
 rootdir: /home/user
 plugins: testinfra-3.2.0, cov-2.8.1
-collected &lt;span class="m"&gt;14&lt;/span&gt; items
+collected &lt;span class="m"&gt;15&lt;/span&gt; items
 
-test_pancake_user PASSED                                      &lt;span class="o"&gt;[&lt;/span&gt;  &lt;span class="m"&gt;7&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;span class="hll"&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2&lt;span class="o"&gt;]&lt;/span&gt; PASSED                         &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;14&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/span&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;python3-Flask&lt;span class="o"&gt;]&lt;/span&gt; FAILED                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;span class="hll"&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2-mod_wsgi-python3&lt;span class="o"&gt;]&lt;/span&gt; PASSED        &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;28&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/span&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;git&lt;span class="o"&gt;]&lt;/span&gt; FAILED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;35&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;span class="hll"&gt;test_apache2_service PASSED                                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;42&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;span class="hll"&gt;test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/wsgi.py&lt;span class="o"&gt;]&lt;/span&gt; PASSED     &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;50&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;span class="hll"&gt;test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/etc/apache2/vhosts.d/pancake.conf&lt;span class="o"&gt;]&lt;/span&gt; PASSED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;57&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/span&gt;test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/pancakes.json&lt;span class="o"&gt;]&lt;/span&gt; FAILED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;64&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_repo FAILED                                      &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;71&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_instance_os_name PASSED                                  &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;78&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_app_get_types FAILED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;85&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_app_get_type FAILED                              &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;92&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_user PASSED                                      &lt;span class="o"&gt;[&lt;/span&gt;  &lt;span class="m"&gt;6&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="hll"&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2&lt;span class="o"&gt;]&lt;/span&gt; PASSED                         &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;13&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;python3&lt;span class="o"&gt;]&lt;/span&gt; PASSED                         &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;20&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="hll"&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;python3-Flask&lt;span class="o"&gt;]&lt;/span&gt; FAILED                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;26&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2-mod_wsgi-python3&lt;span class="o"&gt;]&lt;/span&gt; PASSED        &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;33&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="hll"&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;git&lt;span class="o"&gt;]&lt;/span&gt; FAILED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;40&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;test_apache2_service PASSED                                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;46&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/wsgi.py&lt;span class="o"&gt;]&lt;/span&gt; PASSED     &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;53&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/etc/apache2/vhosts.d/pancake.conf&lt;span class="o"&gt;]&lt;/span&gt; PASSED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;60&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/pancakes.json&lt;span class="o"&gt;]&lt;/span&gt; FAILED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;66&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_repo FAILED                                      &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;73&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_instance_os_name PASSED                                  &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;80&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_app_get_types FAILED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;86&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_app_get_type FAILED                              &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;93&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 test_pancake_app_add_delete_type FAILED                       &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;100&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 
-&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;7&lt;/span&gt; failed, &lt;span class="m"&gt;7&lt;/span&gt; passed in &lt;span class="m"&gt;6&lt;/span&gt;.81s &lt;span class="o"&gt;================&lt;/span&gt;
+&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;7&lt;/span&gt; failed, &lt;span class="m"&gt;8&lt;/span&gt; passed in &lt;span class="m"&gt;6&lt;/span&gt;.81s &lt;span class="o"&gt;================&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
 &lt;div class="section" id="add-states-for-pancake-app"&gt;
@@ -829,31 +837,33 @@ Total run time:  &lt;span class="m"&gt;60&lt;/span&gt;.001 s
 22
 23
 24
-25&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 test_pancake.py
+25
+26&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 test_pancake.py
 &lt;span class="o"&gt;=================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;====================&lt;/span&gt;
 platform linux -- Python &lt;span class="m"&gt;3&lt;/span&gt;.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
 rootdir: /home/user
 plugins: testinfra-3.2.0, cov-2.8.1
-collected &lt;span class="m"&gt;14&lt;/span&gt; items
+collected &lt;span class="m"&gt;15&lt;/span&gt; items
 
-test_pancake_user PASSED                                      &lt;span class="o"&gt;[&lt;/span&gt;  &lt;span class="m"&gt;7&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2&lt;span class="o"&gt;]&lt;/span&gt; PASSED                         &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;14&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;span class="hll"&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;python3-Flask&lt;span class="o"&gt;]&lt;/span&gt; PASSED                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/span&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2-mod_wsgi-python3&lt;span class="o"&gt;]&lt;/span&gt; PASSED        &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;28&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;span class="hll"&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;git&lt;span class="o"&gt;]&lt;/span&gt; PASSED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;35&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/span&gt;test_apache2_service PASSED                                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;42&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/wsgi.py&lt;span class="o"&gt;]&lt;/span&gt; PASSED     &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;50&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/etc/apache2/vhosts.d/pancake.conf&lt;span class="o"&gt;]&lt;/span&gt; PASSED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;57&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;span class="hll"&gt;test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/pancakes.json&lt;span class="o"&gt;]&lt;/span&gt; PASSED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;64&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;span class="hll"&gt;test_pancake_repo PASSED                                      &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;71&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/span&gt;test_instance_os_name PASSED                                  &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;78&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_app_get_types FAILED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;85&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_app_get_type FAILED                              &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;92&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_user PASSED                                      &lt;span class="o"&gt;[&lt;/span&gt;  &lt;span class="m"&gt;6&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2&lt;span class="o"&gt;]&lt;/span&gt; PASSED                         &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;13&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="hll"&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;python3&lt;span class="o"&gt;]&lt;/span&gt; PASSED                         &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;20&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;python3-Flask&lt;span class="o"&gt;]&lt;/span&gt; PASSED                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;26&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="hll"&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2-mod_wsgi-python3&lt;span class="o"&gt;]&lt;/span&gt; PASSED        &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;33&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;git&lt;span class="o"&gt;]&lt;/span&gt; PASSED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;40&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_apache2_service PASSED                                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;46&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/wsgi.py&lt;span class="o"&gt;]&lt;/span&gt; PASSED     &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;54&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="hll"&gt;test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/etc/apache2/vhosts.d/pancake.conf&lt;span class="o"&gt;]&lt;/span&gt; PASSED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;60&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/pancakes.json&lt;span class="o"&gt;]&lt;/span&gt; PASSED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;66&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;test_pancake_repo PASSED                                      &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;73&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_instance_os_name PASSED                                  &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;80&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_app_get_types FAILED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;86&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_app_get_type FAILED                              &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;93&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 test_pancake_app_add_delete_type FAILED                       &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;100&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
 
-&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;3&lt;/span&gt; failed, &lt;span class="m"&gt;11&lt;/span&gt; passed in &lt;span class="m"&gt;8&lt;/span&gt;.08s &lt;span class="o"&gt;===============&lt;/span&gt;
+&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;3&lt;/span&gt; failed, &lt;span class="m"&gt;12&lt;/span&gt; passed in &lt;span class="m"&gt;8&lt;/span&gt;.08s &lt;span class="o"&gt;===============&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;All of the app tests are still failing. For now we can manually restart Apache
 and confirm the app is running.&lt;/p&gt;
@@ -884,31 +894,33 @@ and confirm the app is running.&lt;/p&gt;
 22
 23
 24
-25&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 test_pancake.py
+25
+26&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;:54:57 ▶ pytest -v --ssh-config ssh.conf --hosts &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 test_pancake.py
 &lt;span class="o"&gt;=================================&lt;/span&gt; &lt;span class="nb"&gt;test&lt;/span&gt; session &lt;span class="nv"&gt;starts&lt;/span&gt; &lt;span class="o"&gt;====================&lt;/span&gt;
 platform linux -- Python &lt;span class="m"&gt;3&lt;/span&gt;.7.3, pytest-5.2.1, py-1.8.0, pluggy-0.13.0 --
 /home/user/projects/venvs/mash/bin/python3
 cachedir: .pytest_cache
 rootdir: /home/user
 plugins: testinfra-3.2.0, cov-2.8.1
-collected &lt;span class="m"&gt;14&lt;/span&gt; items
+collected &lt;span class="m"&gt;15&lt;/span&gt; items
 
-test_pancake_user PASSED                                      &lt;span class="o"&gt;[&lt;/span&gt;  &lt;span class="m"&gt;7&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2&lt;span class="o"&gt;]&lt;/span&gt; PASSED                         &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;14&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;python3-Flask&lt;span class="o"&gt;]&lt;/span&gt; PASSED                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2-mod_wsgi-python3&lt;span class="o"&gt;]&lt;/span&gt; PASSED        &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;28&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;git&lt;span class="o"&gt;]&lt;/span&gt; PASSED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;35&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_apache2_service PASSED                                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;42&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/wsgi.py&lt;span class="o"&gt;]&lt;/span&gt; PASSED     &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;50&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/etc/apache2/vhosts.d/pancake.conf&lt;span class="o"&gt;]&lt;/span&gt; PASSED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;57&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/pancakes.json&lt;span class="o"&gt;]&lt;/span&gt; PASSED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;64&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_pancake_repo PASSED                                      &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;71&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-test_instance_os_name PASSED                                  &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;78&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;span class="hll"&gt;test_pancake_app_get_types PASSED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;85&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;span class="hll"&gt;test_pancake_app_get_type PASSED                              &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;92&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;span class="hll"&gt;test_pancake_app_add_delete_type PASSED                       &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;100&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;/span&gt;
-&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;14&lt;/span&gt; passed in &lt;span class="m"&gt;8&lt;/span&gt;.82s &lt;span class="o"&gt;=========================&lt;/span&gt;
+test_pancake_user PASSED                                      &lt;span class="o"&gt;[&lt;/span&gt;  &lt;span class="m"&gt;6&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2&lt;span class="o"&gt;]&lt;/span&gt; PASSED                         &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;13&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;python3&lt;span class="o"&gt;]&lt;/span&gt; PASSED                         &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;20&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;python3-Flask&lt;span class="o"&gt;]&lt;/span&gt; PASSED                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;26&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;apache2-mod_wsgi-python3&lt;span class="o"&gt;]&lt;/span&gt; PASSED        &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;33&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_required_packages&lt;span class="o"&gt;[&lt;/span&gt;git&lt;span class="o"&gt;]&lt;/span&gt; PASSED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;40&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_apache2_service PASSED                                   &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;46&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/wsgi.py&lt;span class="o"&gt;]&lt;/span&gt; PASSED     &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;53&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/etc/apache2/vhosts.d/pancake.conf&lt;span class="o"&gt;]&lt;/span&gt; PASSED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;60&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_config_files&lt;span class="o"&gt;[&lt;/span&gt;/var/lib/pancake/pancakes.json&lt;span class="o"&gt;]&lt;/span&gt; PASSED &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;66&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+test_pancake_repo PASSED                                      &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;73&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="hll"&gt;test_instance_os_name PASSED                                  &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;80&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;test_pancake_app_get_types PASSED                             &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;86&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;span class="hll"&gt;test_pancake_app_get_type PASSED                              &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;93&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;test_pancake_app_add_delete_type PASSED                       &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;100&lt;/span&gt;%&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="o"&gt;=============================&lt;/span&gt; &lt;span class="m"&gt;15&lt;/span&gt; passed in &lt;span class="m"&gt;8&lt;/span&gt;.82s &lt;span class="o"&gt;=========================&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;p&gt;The problem here is that the app states are not properly watched by the Apache
 server state. Therefore it is not notified to restart when the new vhost config
